@@ -10,6 +10,15 @@ public class Prix {
 	
 	public Prix(){}
 
+	
+	public Prix(float prix, Date date, Produit produit) {
+		super();
+		this.prix = prix;
+		this.date = date;
+		this.produit = produit;
+	}
+
+
 	public int getId() {
 		return id;
 	}

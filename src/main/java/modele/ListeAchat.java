@@ -29,8 +29,25 @@ public class ListeAchat {
 	}
 	
 	public EnsembleProduit getPromotion() {
-		//if achats.contains(produitsPromo.get(0).produit1)
+		for (int i = 0 ; i< 4 ; i++)
+		{
+			for (int j =0; j < achats.size() ; j++)
+			{
+				if (achats.get(j).equals(produitsPromo.get(i).produit1))
+				{
+					if (achats.contains(produitsPromo.get(i).produit2)) {
+						Prix prix = null // get en BDD
+								prix.setPrix((float) (prix.getPrix()*0.7));
+					}
+					//achats.get(j).getProduit().setPrix()
+					
+				}
+			}
+		}
+		return null;
 		return null;
 	}
+	
+	
 
 }

@@ -7,7 +7,7 @@ import fr.miage.agents.api.model.Categorie;
 import fr.miage.agents.api.model.Produit;
 import modele.Stock;
 
-public class Prix {
+public class PrixVente {
 	
 	
 	public static float setPrixVente(Produit produit, float prixAchat, int date) {
