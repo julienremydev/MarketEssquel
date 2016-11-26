@@ -23,12 +23,11 @@ public class AgentAchat extends Agent {
 		jade.lang.acl.ACLMessage a = new jade.lang.acl.ACLMessage();
 		Acheter achat = null;
 		try {
-			//a.setContentObject(achat);
+			a.setContentObject(achat);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		//a.setContentObject();
 		
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("Achat");

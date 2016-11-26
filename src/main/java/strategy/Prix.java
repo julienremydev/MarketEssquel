@@ -8,8 +8,9 @@ import fr.miage.agents.api.model.Produit;
 import modele.Stock;
 
 public class Prix {
-
-	public static float getPrixVente(Produit produit, float prixAchat, int date, int stock) {
+	
+	
+	public static float setPrixVente(Produit produit, float prixAchat, int date) {
 		float prixVente = prixAchat;
 
 		//traitement priorite
@@ -23,12 +24,17 @@ public class Prix {
 		}
 
 
-
 		//traitement conccurence
 		float prixConccurence = Prix.getPrixConccurence(produit);
-
-		return 0;
+		
+		while (prixConccurence>prixVente*1.2) {
+			prixVente*=0.98;
+		}
+		prixVente=prixVente*(float) getCoeffDate(produit);
+		return prixVente;
 	}
+	
+	public static float 
 
 	public static float getPrixConccurence(Produit produit) {
 		//appel bdd via agent au supermarche2
@@ -99,7 +105,7 @@ public class Prix {
 		else {
 			if (autres) {
 				return "Autres";
-				
+
 			}
 			else {
 				return categorie.nomCategorie;
@@ -110,22 +116,48 @@ public class Prix {
 	private static double getStockCoeff(Produit produit, Categorie categorie) {
 
 		//getStock
-		Stock stock;
+		Stock stock = null;
 		switch (realCategorie(categorie,true)) {
 		case "Consommable" :
 			if (stock.getQuantite()<10) {
 				return 0.9;
 			}
-			break;
+			if (stock.getQuantite()<20) {
+				return 1.11;
+			}
+			if (stock.getQuantite()<40) {
+				return 1.09;
+			}
+			if (stock.getQuantite()<50) {
+				return 1.06;
+			}
+			if (stock.getQuantite()<80) {
+				return 1.04;
+			}
+			else {
+				return 1.02;
+			}
 		case "Autres" :
 			if (stock.getQuantite()<10) {
 				return 0.9;
 			}
-			return 0;
-				default :
+			if (stock.getQuantite()<20) {
+				return 1.115;
+			}
+			if (stock.getQuantite()<40) {
+				return 1.105;
+			}
+			if (stock.getQuantite()<50) {
+				return 1.1;
+			}
+			if (stock.getQuantite()<80) {
+				return 1.09;
+			}
+			else {
+				return 1.1;
+			}
+		default :
 			return 1;
 		}
-		stock.getQuantite();
-		return 0;
 	}
 }

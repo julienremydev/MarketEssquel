@@ -4,7 +4,7 @@ public class Produit {
 	private int id;
 	private String reference;
 	private String nom;
-	
+
 	public Produit(){}
 
 	public String getReference() {
@@ -29,5 +29,15 @@ public class Produit {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public boolean equals( String nom) {
+		if (nom.equals(this.getNom())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+
 	}
 }

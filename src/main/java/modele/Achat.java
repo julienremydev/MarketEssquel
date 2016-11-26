@@ -2,14 +2,14 @@ package modele;
 
 import java.util.Date;
 
-public class Achete {
+public class Achat {
 	private int id;
 	private int quantite;
 	private Date date;
 	private Fournisseur fournisseur;
 	private Produit produit;
 	
-	public Achete(){}
+	public Achat(){}
 
 	public int getId() {
 		return id;
