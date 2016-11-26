@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 26 nov. 2016 18:21:02 by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="fr.miage.agents.api.model.Produit" table="PRODUIT">
+        <id name="idProduit" type="int" access="field">
+            <column name="IDPRODUIT" />
+            <generator class="assigned" />
+        </id>
+        <property name="nomProduit" type="java.lang.String" access="field">
+            <column name="NOMPRODUIT" />
+        </property>
+        <property name="descriptionProduit" type="java.lang.String" access="field">
+            <column name="DESCRIPTIONPRODUIT" />
+        </property>
+        <property name="prixProduit" type="float" access="field">
+            <column name="PRIXPRODUIT" />
+        </property>
+        <property name="quantiteProduit" type="int" access="field">
+            <column name="QUANTITEPRODUIT" />
+        </property>
+        <many-to-one name="idCategorie" class="fr.miage.agents.api.model.Categorie" access="field" fetch="join">
+            <column name="IDCATEGORIE" />
+        </many-to-one>
+        <property name="marque" type="java.lang.String" access="field">
+            <column name="MARQUE" />
+        </property>
+    </class>
+</hibernate-mapping>

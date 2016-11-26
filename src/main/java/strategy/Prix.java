@@ -1,10 +1,10 @@
-package util;
+package strategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import fr.miage.agents.api.model.Categorie;
-import fr.miage.agents.api.model.Produit;
+import modele.Produit;
 import modele.Stock;
 
 public class Prix {
@@ -85,7 +85,7 @@ public class Prix {
 		list.add(map2);
 		list.add(map3);
 		int nbJours = Stock.getDateAchat(produit);
-		Categorie categorie = produit.idCategorie;
+		Categorie categorie = produit.getC;
 		int coeffNbJours = nbJours % 7;
 		return list.get(coeffNbJours).get(categorie);
 
