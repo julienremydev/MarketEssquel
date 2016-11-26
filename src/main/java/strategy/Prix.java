@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import fr.miage.agents.api.model.Categorie;
-import modele.Produit;
+import fr.miage.agents.api.model.Produit;
 import modele.Stock;
 
 public class Prix {
@@ -85,18 +85,47 @@ public class Prix {
 		list.add(map2);
 		list.add(map3);
 		int nbJours = Stock.getDateAchat(produit);
-		Categorie categorie = produit.getC;
+		Categorie categorie = produit.idCategorie;
 		int coeffNbJours = nbJours % 7;
 		return list.get(coeffNbJours).get(categorie);
 
 	}
-	
-	public static String realCategorie(Categorie categorie) {
-		if (categorie.nomCategorie.equals("Légume") || categorie.nomCategorie.equals("Produit laitier") || categorie.nomCategorie.equals("Boisson") || categorie.nomCategorie.equals("")) {
+
+	public static String realCategorie(Categorie categorie, boolean autres) {
+
+		if (categorie.nomCategorie.equals("Légume") || categorie.nomCategorie.equals("Produit laitier") || categorie.nomCategorie.equals("Boisson")) {
 			return "Consommable";
 		}
 		else {
-			return categorie.nomCategorie;
+			if (autres) {
+				return "Autres";
+				
+			}
+			else {
+				return categorie.nomCategorie;
+			}
 		}
+	}
+
+	private static double getStockCoeff(Produit produit, Categorie categorie) {
+
+		//getStock
+		Stock stock;
+		switch (realCategorie(categorie,true)) {
+		case "Consommable" :
+			if (stock.getQuantite()<10) {
+				return 0.9;
+			}
+			break;
+		case "Autres" :
+			if (stock.getQuantite()<10) {
+				return 0.9;
+			}
+			return 0;
+				default :
+			return 1;
+		}
+		stock.getQuantite();
+		return 0;
 	}
 }
