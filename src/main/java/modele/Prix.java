@@ -1,6 +1,12 @@
 package modele;
 
 import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
+import util.HibernateUtil;
 
 public class Prix {
 	private int id;
@@ -49,5 +55,19 @@ public class Prix {
 
 	public void setProduit(Produit produit) {
 		this.produit = produit;
+	}
+	
+	public Prix getPrixProduit(Produit produit){
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        
+        String hql = "SELECT p FROM Prix p WHERE p.produit=:produit ORDER BY p.date DESC";
+        Query query = session.createQuery(hql);
+        query.setParameter("produit", produit);
+        Prix prix = (Prix)query.list().get(0);
+        
+        session.close();
+        
+        return prix;
 	}
 }
