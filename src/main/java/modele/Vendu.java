@@ -48,13 +48,12 @@ public class Vendu {
 		this.produit = produit;
 	}
 	
-	public List<Produit> getTopProduit(){
+	public static List<Produit> getTopProduit(){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
         String hql = "SELECT v.produit, sum(v.quantite) FROM Vendu v GROUP BY v.produit ORDER BY sum(v.quantite) DESC LIMIT 3";
         Query query = session.createQuery(hql);
-        query.setParameter("produit", produit);
         List result = query.list();
         
         session.close();

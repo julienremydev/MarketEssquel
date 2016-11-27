@@ -57,14 +57,19 @@ public class Prix {
 		this.produit = produit;
 	}
 	
-	public Prix getPrixProduit(Produit produit){
+	public static Prix getPrixProduit(Produit produit){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
         String hql = "SELECT p FROM Prix p WHERE p.produit=:produit ORDER BY p.date DESC";
         Query query = session.createQuery(hql);
         query.setParameter("produit", produit);
-        Prix prix = (Prix)query.list().get(0);
+        
+        Prix prix = null;
+        
+        if(!query.list().isEmpty()){
+        	prix = (Prix)query.list().get(0);
+        }
         
         session.close();
         
