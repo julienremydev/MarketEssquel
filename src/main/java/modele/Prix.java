@@ -75,4 +75,17 @@ public class Prix {
         
         return prix;
 	}
+	
+	public static void ajoutPrix(float prix, Date date, Produit produit){
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        
+        Prix newP = new Prix();
+        newP.setPrix(prix);
+        newP.setDate(date);
+        newP.setProduit(produit);
+        
+        session.save(newP);
+        session.close();
+	}
 }
