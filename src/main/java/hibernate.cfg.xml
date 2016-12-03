@@ -9,5 +9,16 @@
         <property name="hibernate.connection.url">jdbc:mysql://sql7.freemysqlhosting.net/sql7145543</property>
         <property name="hibernate.connection.username">sql7145543</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="show_sql">true</property>
+	    <property name="hibernate.hbm2ddl.auto">update</property>
+	    
+	    <!-- Mapping files -->
+	    <mapping resource="modele/Achete.hbm.xml"/>
+	    <mapping resource="modele/Fournisseur.hbm.xml"/>
+	    <mapping resource="modele/Prix.hbm.xml"/>
+	    <mapping resource="modele/Produit.hbm.xml"/>
+	    <mapping resource="modele/Stock.hbm.xml"/>
+	    <mapping resource="modele/SuperMarche.hbm.xml"/>
+	    <mapping resource="modele/Vendu.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

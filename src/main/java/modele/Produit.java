@@ -1,5 +1,10 @@
 package modele;
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
+import util.HibernateUtil;
+
 public class Produit {
 	private int id;
 	private String reference;
@@ -39,5 +44,36 @@ public class Produit {
 			return false;
 		}
 
+	}
+	
+	public static void ajoutProduit(String reference, String nom){
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        
+        Produit newP = new Produit();
+        newP.setReference(reference);
+        newP.setNom(nom);
+        
+        session.save(newP);
+        session.close();
+	}
+	
+	public static Produit getProduit(String reference){
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        
+        String hql = "SELECT p FROM Produit p WHERE p.reference=:reference";
+        Query query = session.createQuery(hql);
+        query.setParameter("reference", reference);
+        
+        Produit produit = null;
+        
+        if(!query.list().isEmpty()){
+            produit = (Produit)query.list().get(0);
+        }
+        
+        session.close();
+        
+        return produit;
 	}
 }

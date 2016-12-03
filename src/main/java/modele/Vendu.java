@@ -1,6 +1,12 @@
 package modele;
 
 import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
+import util.HibernateUtil;
 
 public class Vendu {
 	private int id;
@@ -40,5 +46,18 @@ public class Vendu {
 
 	public void setProduit(Produit produit) {
 		this.produit = produit;
+	}
+	
+	public static List<Produit> getTopProduit(){
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        
+        String hql = "SELECT v.produit, sum(v.quantite) FROM Vendu v GROUP BY v.produit ORDER BY sum(v.quantite) DESC LIMIT 3";
+        Query query = session.createQuery(hql);
+        List result = query.list();
+        
+        session.close();
+        
+        return result;
 	}
 }
