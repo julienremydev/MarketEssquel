@@ -1,5 +1,9 @@
 package agents;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
+
 import fr.miage.agents.api.message.Message;
 import fr.miage.agents.api.message.recherche.Rechercher;
 import fr.miage.agents.api.message.recherche.ResultatRecherche;
@@ -14,7 +18,7 @@ public class AgentAchat extends CyclicBehaviour{
 	public AgentAchat(Agent a){
 		super(a);
 	}
-	
+	HashMap<UUID,ArrayList<Message>> transaction = new HashMap<UUID,ArrayList<Message>>();
 	public void action() 
     {
        ACLMessage msg= this.getAgent().receive();
@@ -25,6 +29,8 @@ public class AgentAchat extends CyclicBehaviour{
 			switch(message.type){
 			case Recherche:
 				Rechercher recherche = (Rechercher)msg.getContentObject();
+				
+				
 				break;
 				case ResultatInitiationAchat:
 				
