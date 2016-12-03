@@ -9,6 +9,8 @@ import modele.Stock;
 
 public class PrixVente {
 	
+	//evaluation
+	//doubler la méthode sans la concurrence
 	
 	public static float setPrixVente(Produit produit, float prixAchat, int date) {
 		float prixVente = prixAchat;
