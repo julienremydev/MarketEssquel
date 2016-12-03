@@ -1,45 +1,35 @@
 package agents;
-import java.io.IOException;
 
-import fr.miage.agents.api.message.demande.Acheter;
 import jade.core.Agent;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.domain.introspection.ACLMessage;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
+import fr.miage.agents.api.message.Message;
 
-/**
-   This example shows a minimal agent that just prints "Hello World!" 
-   and then terminates.
-   @author Giovanni Caire - TILAB
- */
-public class AgentAchat extends Agent {
-
-	protected void setup() {		
-		DFAgentDescription dfd = new DFAgentDescription();
-		dfd.setName(this.getAID());
-		ACLMessage b = new ACLMessage();
-		jade.lang.acl.ACLMessage a = new jade.lang.acl.ACLMessage();
-		Acheter achat = null;
-		try {
-			a.setContentObject(achat);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+public class AgentAchat extends CyclicBehaviour{
+	Agent agent;
+	
+	public AgentAchat(Agent a){
+		agent = a;
+	}
+	
+	public void action() 
+    {
+       ACLMessage msg= agent.receive();
+       if (msg!=null){
+    	   try {
+			Message message = (Message)msg.getContentObject();
+			
+			switch(message.type){
+				case InitierAchat:
+				
+					break;
+					
+			}
+		} catch (UnreadableException e) {
+			e.printStackTrace();
 		}
-		
-		ServiceDescription sd = new ServiceDescription();
-		sd.setType("Achat");
-		sd.setName("serviceachat");
-		
-		dfd.addServices(sd);
-		try {DFService.register(this, dfd);}
-		catch (FIPAException e) {System.out.println("serviceachat");doDelete();}
-
-		// Make this agent terminate
-		
-	} 
+       }
+       block();
+    }
 }
-
-// On ne va pas s'intéresser à comprendre chaque ligne du code mais juste comment compiler et lancer l'agent.
