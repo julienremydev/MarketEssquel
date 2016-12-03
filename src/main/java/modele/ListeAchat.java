@@ -36,15 +36,13 @@ public class ListeAchat {
 				if (achats.get(j).equals(produitsPromo.get(i).produit1))
 				{
 					if (achats.contains(produitsPromo.get(i).produit2)) {
-						Prix prix = null // get en BDD
+						Prix prix = null; // get en BDD des prix des deux produits
 								prix.setPrix((float) (prix.getPrix()*0.7));
 					}
-					//achats.get(j).getProduit().setPrix()
 					
 				}
 			}
 		}
-		return null;
 		return null;
 	}
 	
