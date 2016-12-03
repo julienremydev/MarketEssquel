@@ -12,6 +12,7 @@ public class Receiver extends Agent
     protected void setup() 
     {
         addBehaviour(new AgentAchat(this));
+        addBehaviour(new AgentGestion(this));
     }
 }
 
