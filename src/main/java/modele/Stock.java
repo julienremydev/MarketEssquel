@@ -3,7 +3,7 @@ package modele;
 import java.util.Date;
 
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.Query;
 
 import fr.miage.agents.api.model.Produit;
 import util.HibernateUtil;

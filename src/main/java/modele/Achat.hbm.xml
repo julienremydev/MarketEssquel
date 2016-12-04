@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 26 nov. 2016 18:21:02 by Hibernate Tools 3.5.0.Final -->
+<!-- Generated 3 d?c. 2016 23:34:04 by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="modele.Achete" table="ACHETE">
+    <class name="modele.Achat" table="ACHAT">
         <id name="id" type="int">
             <column name="ID" />
             <generator class="assigned" />
@@ -14,11 +14,11 @@
         <property name="date" type="java.util.Date">
             <column name="DATE" />
         </property>
-        <many-to-one name="fournisseur" class="modele.Fournisseur" fetch="join">
-            <column name="FOURNISSEUR" />
-        </many-to-one>
         <many-to-one name="produit" class="modele.Produit" fetch="join">
             <column name="PRODUIT" />
         </many-to-one>
+        <property name="prix_unitaire" type="int">
+            <column name="PRIX_UNITAIRE" />
+        </property>
     </class>
 </hibernate-mapping>

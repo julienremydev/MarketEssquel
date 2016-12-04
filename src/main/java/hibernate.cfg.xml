@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-configuration PUBLIC
-		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-		"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-    <session-factory>
-        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.password">s1nkVCycpf</property>
-        <property name="hibernate.connection.url">jdbc:mysql://sql7.freemysqlhosting.net/sql7145543</property>
-        <property name="hibernate.connection.username">sql7145543</property>
-        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-        <property name="show_sql">true</property>
-	    <property name="hibernate.hbm2ddl.auto">update</property>
-	    
-	    <!-- Mapping files -->
-	    <mapping resource="modele/Achete.hbm.xml"/>
-	    <mapping resource="modele/Fournisseur.hbm.xml"/>
-	    <mapping resource="modele/Prix.hbm.xml"/>
-	    <mapping resource="modele/Produit.hbm.xml"/>
-	    <mapping resource="modele/Stock.hbm.xml"/>
-	    <mapping resource="modele/SuperMarche.hbm.xml"/>
-	    <mapping resource="modele/Vendu.hbm.xml"/>
-    </session-factory>
+  <session-factory>
+    <property name="hibernate.current_session_context_class">thread</property>
+    <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+    <property name="connection.driver_class">org.mariadb.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mariadb://localhost:3306/forum</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password">jaimelecafe</property>
+    <property name="show_sql">true</property>
+    <!-- Drop and re-create the database schema on startup -->
+    <property name="hbm2ddl.auto">validate</property> 
+    <!-- Mapping files -->
+    
+  </session-factory>
 </hibernate-configuration>
+
+
+

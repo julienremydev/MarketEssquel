@@ -1,18 +1,24 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 26 nov. 2016 18:21:02 by Hibernate Tools 3.5.0.Final -->
+<!-- Generated 3 d?c. 2016 23:34:04 by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
     <class name="modele.Produit" table="PRODUIT">
-        <id name="id" type="int">
-            <column name="ID" />
+        <id name="idProduit" type="long">
+            <column name="IDPRODUIT" />
             <generator class="assigned" />
         </id>
-        <property name="reference" type="java.lang.String">
-            <column name="REFERENCE" />
+        <property name="nomProduit" type="java.lang.String">
+            <column name="NOMPRODUIT" />
         </property>
-        <property name="nom" type="java.lang.String">
-            <column name="NOM" />
+        <property name="descriptionProduit" type="java.lang.String">
+            <column name="DESCRIPTIONPRODUIT" />
+        </property>
+        <property name="categorie" type="java.lang.String">
+            <column name="CATEGORIE" />
+        </property>
+        <property name="marque" type="java.lang.String">
+            <column name="MARQUE" />
         </property>
     </class>
 </hibernate-mapping>

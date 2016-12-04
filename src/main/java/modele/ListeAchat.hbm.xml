@@ -3,13 +3,15 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 3 d?c. 2016 23:34:04 by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="modele.Fournisseur" table="FOURNISSEUR">
-        <id name="id" type="int">
+    <class name="modele.ListeAchat" table="LISTEACHAT">
+        <id name="id" type="java.lang.Long">
             <column name="ID" />
             <generator class="assigned" />
         </id>
-        <property name="nom" type="java.lang.String">
-            <column name="NOM" />
-        </property>
+        <list name="achats" inverse="false" table="ACHAT" lazy="true">
+            <key></key>
+            <list-index></list-index>
+            <one-to-many class="modele.Achat" />
+        </list>
     </class>
 </hibernate-mapping>
