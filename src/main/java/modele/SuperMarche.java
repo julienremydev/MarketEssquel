@@ -3,7 +3,7 @@ package modele;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.Query;
 
 import util.HibernateUtil;
 
@@ -12,12 +12,9 @@ public class SuperMarche {
 	private String nom;
 	private float capital;
 	private int stock;
-	private static final int MAX_STOCK = 1000;
+	private int MAX_STOCK;
 	
-	public SuperMarche(){
-		capital = 10000;
-		stock = 0;
-	}
+	public SuperMarche(){}
 
 	public int getId() {
 		return id;
@@ -41,10 +38,6 @@ public class SuperMarche {
 
 	public void setCapital(float capital) {
 		this.capital = capital;
-	}
-
-	public static int getMaxStock() {
-		return MAX_STOCK;
 	}
 
 	public int getStock() {
@@ -101,5 +94,13 @@ public class SuperMarche {
         session.close();
         
         return supermarches;
+	}
+
+	public int getMAX_STOCK() {
+		return MAX_STOCK;
+	}
+
+	public void setMAX_STOCK(int mAX_STOCK) {
+		MAX_STOCK = mAX_STOCK;
 	}
 }

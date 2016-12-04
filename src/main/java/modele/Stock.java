@@ -2,13 +2,13 @@ package modele;
 
 import java.util.Date;
 
-import org.hibernate.Session;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
-import fr.miage.agents.api.model.Produit;
 import util.HibernateUtil;
 
 public class Stock {
+	//@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private int quantite;
 	private Date dateAchat;

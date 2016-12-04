@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class ListeAchat {
 	
+	private int id;
 	public ArrayList<Achat> achats;
 	
 	public final static ArrayList<EnsembleProduit> produitsPromo = new ArrayList<EnsembleProduit>();
@@ -44,6 +45,14 @@ public class ListeAchat {
 			}
 		}
 		return null;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	

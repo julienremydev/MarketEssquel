@@ -6,7 +6,7 @@
     <class name="modele.Produit" table="PRODUIT">
         <id name="idProduit" type="long">
             <column name="IDPRODUIT" />
-            <generator class="assigned" />
+            <generator class="increment"/>
         </id>
         <property name="nomProduit" type="java.lang.String">
             <column name="NOMPRODUIT" />

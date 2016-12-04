@@ -2,7 +2,9 @@ package modele;
 
 public class DemandeClient {
 
+	private int id;
 	private Produit produit;
+	
 	private int quantite;
 	
 	public DemandeClient (Produit produit, int quantite){
@@ -24,6 +26,14 @@ public class DemandeClient {
 
 	public void setQuantite(int quantite) {
 		this.quantite = quantite;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 }

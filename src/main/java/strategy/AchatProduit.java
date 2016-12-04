@@ -2,12 +2,10 @@ package strategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.Query;
-import org.hibernate.Session;
 import modele.Achat;
 import modele.Prix;
 import modele.Produit;
@@ -45,7 +43,7 @@ import util.HibernateUtil;
  */
 public class AchatProduit {
 	private SuperMarche s;
-	List<Produit> listeProduitsStrategiques = Arrays.asList(Produit.getProduit(24),Produit.getProduit(25),Produit.getProduit(26),Produit.getProduit(27));
+	List<Produit> listeProduitsStrategiques;
 	//private ArrayList<Produit> listeProduitsStrategiques = new ArrayList<Produit>  ();
 	private int seuil_produits_ht = 20;
 	private int seuil_produits_prioritaires = 30;
@@ -56,10 +54,12 @@ public class AchatProduit {
 		//Parcourir tous les produits et vérifier si ils se sont correctement vendus récemment
 		//Sinon les virer de la liste
 	}
-	
+	public AchatProduit(){}
 	public AchatProduit ( SuperMarche s ){
 		this.setS(s);
 		//Ajouter tous les produits High-Tech et tous les autres produits 
+		listeProduitsStrategiques = Arrays.asList(Produit.getProduit(24),Produit.getProduit(25),Produit.getProduit(26),Produit.getProduit(27));
+		
 	}
 
 	public int getNombreProduitsDansStock(Produit produit) {

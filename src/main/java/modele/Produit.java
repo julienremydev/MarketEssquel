@@ -3,12 +3,16 @@ package modele;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+
 import org.hibernate.Session;
 import org.hibernate.Query;
 
 import util.HibernateUtil;
 
 public class Produit {
+
 	private long idProduit;
 
 	private String nomProduit;
@@ -32,7 +36,7 @@ public class Produit {
 
 	}
 	
-	public static void ajoutProduit(int ref, String nom){
+	public static void ajoutProduit(long ref, String nom){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
@@ -44,7 +48,8 @@ public class Produit {
         session.close();
 	}
 	
-	public static Produit getProduit(int ref){
+	public static Produit getProduit(long ref){
+		
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
