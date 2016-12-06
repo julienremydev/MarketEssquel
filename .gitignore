@@ -4,9 +4,9 @@ target/
 /target/**
 target/**/**
 /target/**/**
-agent-api/
-/agent-api/
-/agent-api/**
-agent-api/**/**
-/agent-api/**/**
+agents-api/
+/agents-api/
+/agents-api/**
+agents-api/**/**
+/agents-api/**/**
 
