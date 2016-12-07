@@ -1,14 +1,13 @@
 package agents;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 import fr.miage.agents.api.message.Message;
-import fr.miage.agents.api.message.auth.DemanderSession;
-import fr.miage.agents.api.message.auth.ResultatDemandeSession;
+import fr.miage.agents.api.message.negociation.FinaliserAchat;
 import fr.miage.agents.api.message.negociation.InitierAchat;
+import fr.miage.agents.api.message.negociation.ResultatFinalisationAchat;
 import fr.miage.agents.api.message.negociation.ResultatInitiationAchat;
 import fr.miage.agents.api.message.recherche.ResultatRecherche;
 import fr.miage.agents.api.model.Produit;
@@ -23,8 +22,8 @@ public class AgentAchat extends CyclicBehaviour{
 	public AgentAchat(Agent a){
 		super(a);
 	}
-	HashMap<UUID,ArrayList<Message>> transaction = new HashMap<UUID,ArrayList<Message>>();
-	HashMap<String,ArrayList<Object>> produitTemp = new HashMap<String,ArrayList<Object>>();
+	HashMap<UUID,ACLMessage> transaction = new HashMap<UUID,ACLMessage>();
+	HashMap<UUID,InitierAchat> produitEtQuantite = new HashMap<UUID,InitierAchat>();
 	public void action() 
 	{
 		ACLMessage msg= this.getAgent().receive();
@@ -34,46 +33,66 @@ public class AgentAchat extends CyclicBehaviour{
 
 				switch(message.type){
 				case InitierAchat:
-					String notreUuid =  UUID.randomUUID().toString();
+					UUID notreUuid =  UUID.randomUUID();
 					//reception du message de l'agent gestion
 					InitierAchat infoAgentGestion = (InitierAchat)msg.getContentObject();
-					//on stocke la quantité car l'API n'a pas été faite avec nous donc c'est pas prévu
+					//creation d'un message pour agents
+					ACLMessage initiationDeLachat = new ACLMessage(ACLMessage.INFORM);
+					initiationDeLachat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
+					//met les attrivuts
+					InitierAchat contenuInitAchat = new InitierAchat();
+					contenuInitAchat.session = notreUuid;
+					contenuInitAchat.idProduit = infoAgentGestion.idProduit;
+					contenuInitAchat.quantite = infoAgentGestion.quantite;
+					//envoi des informations pour initier un achat avec le fournisseur
+					initiationDeLachat.setContentObject(contenuInitAchat);
 					
-					ACLMessage demandeSession = new ACLMessage(ACLMessage.INFORM);
-					demandeSession.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
-					//on créer ensuite une recherche pour l'envoyer au fournisseur avec les infos fournies par l'agent gesiton
-					DemanderSession demande = new DemanderSession();
-					demande.ping = notreUuid;
-					demandeSession.setContentObject(demande);
-					this.getAgent().send(demandeSession);
-
+					transaction.put(notreUuid, initiationDeLachat);
+					produitEtQuantite.put(notreUuid, infoAgentGestion);
+					this.getAgent().send(initiationDeLachat);
 					break;
-				case ResultatDemandeSession:
-					ResultatDemandeSession pong = (ResultatDemandeSession)msg.getContentObject();
+				case ResultatInitiationAchat:
+					ResultatInitiationAchat resultAch = (ResultatInitiationAchat)msg.getContentObject();
+					UUID sessionCourante = resultAch.session;
+					InitierAchat infoAgentGestionResult = (InitierAchat)produitEtQuantite.get(sessionCourante);
 					
+					if (resultAch.quantiteDisponible != 0)
+					{
+						if(resultAch.quantiteDisponible == infoAgentGestionResult.quantite )
+						{
+							if (resultAch.prixFixe == 15)
+							{
+								ACLMessage finalisationAchat = new ACLMessage(ACLMessage.INFORM);
+								initiationDeLachat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
+								
+								FinaliserAchat contenuFinalAchat = new FinaliserAchat();
+								contenuFinalAchat.session=sessionCourante;
+								
+								finalisationAchat.setContentObject(contenuFinalAchat);
+								transaction.put(sessionCourante, finalisationAchat);
+								this.getAgent().send(finalisationAchat);
+							}
+						}
+						else{
+							// initier nouvel Achat
+						}
+					}
+						
 					
-					ACLMessage messInitAchat = new ACLMessage(ACLMessage.INFORM);
-					messInitAchat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
+					break;
+				case ResultatFinalisationAchat:
+					ResultatFinalisationAchat resultatFinalAchat = (ResultatFinalisationAchat)msg.getContentObject();
+					UUID sessionCouranteFinalAchat = resultatFinalAchat.session;
+					long idprod = resultatFinalAchat.idProduit;
+					int quantitDemande = resultatFinalAchat.quantiteProduit;
+					float prixAchat = resultatFinalAchat.prixFinal;
+					// Do some shit to add BDD
+					System.out.println("achat de : " + idprod + " au nombre de : "+quantitDemande+" au prix de : "+prixAchat);
 					
-					InitierAchat initAchat = new InitierAchat();
-					initAchat.idProduit=(int) produitTemp.get(pong.session).get(0);
-					initAchat.quantite=(int) produitTemp.get(pong.session).get(1);
-					initAchat.session=pong.session;
-					
-					messInitAchat.setContentObject(initAchat);
-					ArrayList<Message> listMessages = new ArrayList<Message>();
-					listMessages.add(initAchat);
-					transaction.put(pong.session, listMessages);
-					
-					this.getAgent().send(messInitAchat);
 					
 					break;
 				
-				case ResultatInitiationAchat:
-					ResultatInitiationAchat resultAch = (ResultatInitiationAchat)msg.getContentObject();
-					
-					
-					break;
+			
 				case ResultatRecherche:
 					ResultatRecherche resultatRecherche = (ResultatRecherche) msg.getContentObject();
 					transaction.put(resultatRecherche.Session, msg);
