@@ -27,7 +27,7 @@ public class AgentClient extends CyclicBehaviour{
 				switch(message.type){
 				case Recherche:
 					Rechercher recherche = (Rechercher)msg.getContentObject();
-					//recherche.
+					
 					break;
 				case PrevenirSolde:
 					if (msg.getSender().getName().equals("AgentGestion")) {

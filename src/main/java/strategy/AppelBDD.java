@@ -15,16 +15,26 @@ import util.HibernateUtil;
 public class AppelBDD {
 
 	public static ResultatRecherche search(Rechercher recherche) {
-		List<Product> list = rechercheParCategorie(recherche.nomCategorie);
-		List<fr.miage.agents.api.model.Produit> returnList = new ArrayList<fr.miage.agents.api.model.Produit>();
-		for (Product p : list) {
-			Produit produit = new Produit();
-			float prix = Prix.getPrixProduit(p);
-		}
 		ResultatRecherche rr = new ResultatRecherche();
+		//rechercher produit par nom categorie via Hibernate
+		if (recherche.idProduit<0) {
+			Product p = Product.getProduct(recherche.idProduit);
+			//setPrixVente
+			p.getCloneProduit();
+			//rr.produitList.add(product.getCloneProduit(prix)(recherche.idProduit));
+		}
+		List<Product> list = rechercheParCategorie(recherche.nomCategorie);
+		List<Produit> returnList = new ArrayList<Produit>();
+		for (Product p : list) {
+			float prix = Prix.getPrixProduit(p);
+			Produit prod = new Produit();
+			//set produit
+			prod.prixProduit=prix;
+		}
+		
 		rr.produitList=returnList;
 		return rr;
-		//rechercher produit par nom categorie via Hibernate
+
 	}
 
 	public static List<Product> rechercheParCategorie(String categorie) {
@@ -33,7 +43,7 @@ public class AppelBDD {
 		List<Product> products = new ArrayList<Product>();
 		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
-		products = ((Session) HibernateUtil.getSessionFactory()).createQuery("from Produit where nomCategorie=?")
+		products = ((Session) HibernateUtil.getSessionFactory()).createQuery("from Produit natural join Categorie where nomCategorie=?")
 				.setParameter(0, categorie).list();
 
 		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
