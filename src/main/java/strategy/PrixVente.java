@@ -162,4 +162,9 @@ public class PrixVente {
 			return 1;
 		}
 	}
+
+	public static void updatePrice() {
+		// TODO Auto-generated method stub
+		
+	}
 }
