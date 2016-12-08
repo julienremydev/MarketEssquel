@@ -59,7 +59,7 @@ public class AgentGestion extends TickerBehaviour{
 		 * Gestion des Soldes
 		 */
 		HashMap<String, Double> salesOrganize = Promotion.checkForSales();
-		if(salesOrganize != null){
+		if(!salesOrganize.isEmpty()){
 			ACLMessage sales = new ACLMessage(ACLMessage.INFORM);
 			sales.addReceiver(new AID("AgentVente", AID.ISLOCALNAME));
 
@@ -73,7 +73,3 @@ public class AgentGestion extends TickerBehaviour{
 		block();
 	}
 }
-
-//if(!sales.isEmpty()){
-//	
-//}

@@ -24,6 +24,12 @@ public class Promotion {
 		 * Calcul du ratio par rapport au capital du super marché
 		 */
 		SuperMarche market = SuperMarche.getSuperMarche("MarketEssquel");
+		int nbJoursPromos = market.getJoursPromos();
+		
+		if(nbJoursPromo <= 0){
+			return sales;
+		}
+		
 		float capital = market.getCapital();
 		double ratioCapital = calculRatioCapital(capital);
 		
@@ -59,6 +65,9 @@ public class Promotion {
 			it.remove();
 		}
 			
+		if(!sales.isEmpty()){
+			Promotion.ajoutPromo(sales);
+		}
 		return sales;
 	}
 	
@@ -85,21 +94,22 @@ public class Promotion {
 		
 		for(Product product : products){
 			Stock stock = Stock.getVieuxStock(product);
-			Date date = stock.getDateAchat();
-			int quantite = stock.getQuantite();
-			double ratioProduit = 1;
-			
-			long dateDiff = new Date().getTime() - date.getTime();
-			double nbJourDiff= dateDiff / (1000*60*60*24);
-			if(nbJourDiff > 90){
-				ratioProduit *= 0.95*(1-1/nbProduitsCategorie)*calculRatioQuantite(quantite);
-			}else if(nbJourDiff > 60){
-				ratioProduit *= 0.85*(1-1/nbProduitsCategorie)*calculRatioQuantite(quantite);
-			}else if(nbJourDiff > 30){
-				ratioProduit *= 0.75*(1-1/nbProduitsCategorie)*calculRatioQuantite(quantite);
+			if(stock != null) {
+				Date date = stock.getDateAchat();
+				int quantite = stock.getQuantite();
+				double ratioProduit = 1;
+				
+				long dateDiff = new Date().getTime() - date.getTime();
+				double nbJourDiff= dateDiff / (1000*60*60*24);
+				if(nbJourDiff > 90){
+					ratioProduit *= 0.95*(1-1/nbProduitsCategorie)*calculRatioQuantite(quantite);
+				}else if(nbJourDiff > 60){
+					ratioProduit *= 0.85*(1-1/nbProduitsCategorie)*calculRatioQuantite(quantite);
+				}else if(nbJourDiff > 30){
+					ratioProduit *= 0.75*(1-1/nbProduitsCategorie)*calculRatioQuantite(quantite);
+				}
+				cumulRatio += ratioProduit;
 			}
-			
-			cumulRatio += ratioProduit;
 		}
 		
 		return cumulRatio/nbProduitsCategorie;
