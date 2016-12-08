@@ -6,12 +6,12 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
-public class Receiver extends Agent 
+public class Sender extends Agent 
 {
 
     protected void setup() 
     {
-        addBehaviour(new AgentAchat(this));
+        addBehaviour(new AgentGestion(this));
     }
 }
 

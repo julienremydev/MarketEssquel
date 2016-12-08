@@ -15,10 +15,11 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 
 public class AgentAchat extends CyclicBehaviour{
-
+	private static final MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
 	public AgentAchat(Agent a){
 		super(a);
 	}
@@ -27,13 +28,14 @@ public class AgentAchat extends CyclicBehaviour{
 	public void action() 
 	{
 		block();
-		ACLMessage msg= this.getAgent().receive();
+		ACLMessage msg= this.getAgent().blockingReceive(mt);
 		if (msg!=null){
 			try {
 				Message message = (Message)msg.getContentObject();
 
 				switch(message.type){
 				case InitierAchat:
+					System.out.println("ok");
 					UUID notreUuid =  UUID.randomUUID();
 					//reception du message de l'agent gestion
 					InitierAchat infoAgentGestion = (InitierAchat)msg.getContentObject();
@@ -117,9 +119,7 @@ public class AgentAchat extends CyclicBehaviour{
 					}
 					
 					break;
-				case Recherche:
-					System.out.println("on est dedans mireille");
-					break;
+				
 
 				}
 			} catch (UnreadableException | IOException e) {

@@ -33,8 +33,9 @@ public class AgentGestion extends TickerBehaviour{
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry)it.next();
 			ACLMessage achatProduit = new ACLMessage(ACLMessage.INFORM);
-			achatProduit.addReceiver(new AID("AgentAchat", AID.ISLOCALNAME));
-
+			AID x = new AID ("receiver@169.254.69.248:8521/JADE");
+			x.addAddresses("http://DESKTOP-071AKV4:7778/acc");
+			achatProduit.addReceiver(x);
 			InitierAchat ia = new InitierAchat();
 			ia.idProduit = ((Product)pair.getKey()).getIdProduct();
 			ia.quantite = (int) pair.getValue();
