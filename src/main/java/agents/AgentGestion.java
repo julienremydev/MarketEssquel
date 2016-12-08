@@ -14,7 +14,7 @@ import jade.lang.acl.ACLMessage;
 import modele.Product;
 import strategy.AchatProduit;
 import strategy.PrixVente;
-import strategy.Promotion;
+import strategy.DefinirPromotion;
 
 public class AgentGestion extends TickerBehaviour{
 
@@ -59,7 +59,7 @@ public class AgentGestion extends TickerBehaviour{
 		/*
 		 * Gestion des Soldes
 		 */
-		HashMap<String, Double> salesOrganize = Promotion.checkForSales();
+		HashMap<String, Double> salesOrganize = DefinirPromotion.checkForSales();
 		if(!salesOrganize.isEmpty()){
 			ACLMessage sales = new ACLMessage(ACLMessage.INFORM);
 			sales.addReceiver(new AID("AgentVente", AID.ISLOCALNAME));

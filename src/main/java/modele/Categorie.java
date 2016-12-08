@@ -25,6 +25,11 @@ public class Categorie {
 	public void setNomCategorie(String nomCategorie) {
 		this.nomCategorie = nomCategorie;
 	}
+
+	public static Categorie getCategorie(Integer idCat) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }

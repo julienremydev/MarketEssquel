@@ -1,8 +1,13 @@
 package modele;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
+
+import org.hibernate.Session;
+
+import util.HibernateUtil;
 
 
 public class Promotion {
@@ -56,5 +61,25 @@ public class Promotion {
 		this.promo = promo;
 	}
 
-
+	public static void ajoutPromo(Integer idCat, double promo){
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        
+        Categorie cat = (Categorie)session.load(Categorie.class, idCat);
+        
+        Calendar date = Calendar.getInstance();
+        
+        Promotion pr = new Promotion();
+        pr.setPromosCategorie(cat);
+        pr.setPromo(promo);
+        
+        date.add(Calendar.DATE, 14);
+        pr.setDateDebut(date.getTime());
+        date.add(Calendar.DATE, 2);
+        pr.setDateFin(date.getTime());
+        date.add(Calendar.DATE, -16);
+        
+        session.save(pr);
+        session.close();
+	}
 }

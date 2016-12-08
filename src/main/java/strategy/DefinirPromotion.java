@@ -1,32 +1,35 @@
 package strategy;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import fr.miage.agents.api.message.negociation.InitierAchat;
 import fr.miage.agents.api.message.recherche.Rechercher;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.ArrayList;
 import modele.Product;
+import modele.Promotion;
 import modele.Stock;
 import modele.SuperMarche;
 
-public class Promotion {
+public class DefinirPromotion {
 
-	public static HashMap<String, Double> checkForSales() {
+	public static HashMap<Integer, Double> checkForSales() {
 		// TODO regarder les vieux stocks et la trésorerie pour établir une période de soldes de 2 jours dans 2 semaines
-		HashMap<String, Double> sales = new HashMap();
+		HashMap<Integer, Double> sales = new HashMap();
 		
 		/*
 		 * Calcul du ratio par rapport au capital du super marché
 		 */
 		SuperMarche market = SuperMarche.getSuperMarche("MarketEssquel");
-		int nbJoursPromos = market.getJoursPromos();
+		int nbJoursPromos = market.getNb_jours_promo_restants();
 		
-		if(nbJoursPromo <= 0){
+		if(nbJoursPromos <= 0){
 			return sales;
 		}
 		
@@ -36,11 +39,11 @@ public class Promotion {
 		/*
 		 * Calcul du ratio par rapport au vieux stock
 		 */
-		HashMap<String, Double> ratiosVieuxStocks = new HashMap();
-		String[] categories = {"cosmétique", "High-tech", "Produit d'entretien"};
+		HashMap<Integer, Double> ratiosVieuxStocks = new HashMap();
+		int[] categories = {4, 5, 6};
 		for(int i=0; i<categories.length; i++){
-			List<Product> products = Product.getCategorieProduct(categories[0]);
-			ratiosVieuxStocks.put(categories[0], calculRationStockCategorie(products));
+			List<Product> products = Product.getCategorieProduct(categories[i]);
+			ratiosVieuxStocks.put(categories[i], calculRationStockCategorie(products));
 		}
 		
 		
@@ -53,20 +56,25 @@ public class Promotion {
 			double ratio = (double)pair.getValue()*ratioCapital;
 			
 			if(ratio > 0.40){
-				sales.put((String)pair.getKey(), 10.0);
+				sales.put((Integer)pair.getKey(), 10.0);
 			}else if(ratio > 0.55){
-				sales.put((String)pair.getKey(), 20.0);
+				sales.put((Integer)pair.getKey(), 20.0);
 			}else if(ratio > 0.70){
-				sales.put((String)pair.getKey(), 30.0);
+				sales.put((Integer)pair.getKey(), 30.0);
 			}else if(ratio > 0.85){
-				sales.put((String)pair.getKey(), 40.0);
+				sales.put((Integer)pair.getKey(), 40.0);
 			}
 
 			it.remove();
 		}
 			
 		if(!sales.isEmpty()){
-			Promotion.ajoutPromo(sales);
+			Iterator it2 = sales.entrySet().iterator();
+			while (it2.hasNext()) {
+				Map.Entry pair = (Map.Entry)it2.next();
+				Promotion.ajoutPromo((Integer)pair.getKey(), (double)pair.getValue());
+				it2.remove();
+			}
 		}
 		return sales;
 	}
