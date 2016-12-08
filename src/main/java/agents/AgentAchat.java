@@ -26,6 +26,7 @@ public class AgentAchat extends CyclicBehaviour{
 	HashMap<UUID,InitierAchat> produitEtQuantite = new HashMap<UUID,InitierAchat>();
 	public void action() 
 	{
+		block();
 		ACLMessage msg= this.getAgent().receive();
 		if (msg!=null){
 			try {
@@ -63,7 +64,7 @@ public class AgentAchat extends CyclicBehaviour{
 							if (resultAch.prixFixe == 15)
 							{
 								ACLMessage finalisationAchat = new ACLMessage(ACLMessage.INFORM);
-								initiationDeLachat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
+								finalisationAchat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
 								
 								FinaliserAchat contenuFinalAchat = new FinaliserAchat();
 								contenuFinalAchat.session=sessionCourante;
@@ -104,8 +105,8 @@ public class AgentAchat extends CyclicBehaviour{
 						//on créer ensuite une recherche pour l'envoyer au fournisseur avec les infos fournies par l'agent gesiton
 						InitierAchat initAch = new InitierAchat();
 						initAch.idProduit = (int) produit.idProduit;
-						Double d = produitTemp.get(produit.nomProduit);
-						initAch.quantite = d.intValue();
+						//Double d = produitTemp.get(produit.nomProduit);
+						//initAch.quantite = d.intValue();
 						
 						initAchat.setContentObject(initAch);
 						this.getAgent().send(initAchat);
@@ -116,12 +117,14 @@ public class AgentAchat extends CyclicBehaviour{
 					}
 					
 					break;
+				case Recherche:
+					System.out.println("on est dedans mireille");
+					break;
 
 				}
 			} catch (UnreadableException | IOException e) {
 				e.printStackTrace();
 			}
 		}
-		block();
 	}
 }
