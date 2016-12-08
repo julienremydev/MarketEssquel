@@ -12,6 +12,7 @@ import fr.miage.agents.api.message.recherche.Rechercher;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.ArrayList;
+import modele.Categorie;
 import modele.Product;
 import modele.Promotion;
 import modele.Stock;
@@ -19,10 +20,10 @@ import modele.SuperMarche;
 
 public class DefinirPromotion {
 
-	public static HashMap<Integer, Double> checkForSales() {
+	public static HashMap<String, Double> checkForSales() {
 		// TODO regarder les vieux stocks et la trésorerie pour établir une période de soldes de 2 jours dans 2 semaines
-		HashMap<Integer, Double> sales = new HashMap();
-		
+		HashMap<Integer, Double> salesToInsert = new HashMap();
+		HashMap<String, Double> salesToReturn = new HashMap();
 		/*
 		 * Calcul du ratio par rapport au capital du super marché
 		 */
@@ -30,7 +31,7 @@ public class DefinirPromotion {
 		int nbJoursPromos = market.getNb_jours_promo_restants();
 		
 		if(nbJoursPromos <= 0){
-			return sales;
+			return salesToReturn;
 		}
 		
 		float capital = market.getCapital();
@@ -54,22 +55,25 @@ public class DefinirPromotion {
 
 			pair.getKey();
 			double ratio = (double)pair.getValue()*ratioCapital;
-			
 			if(ratio > 0.40){
-				sales.put((Integer)pair.getKey(), 10.0);
+				salesToInsert.put((Integer)pair.getKey(), 10.0);
+				salesToReturn.put((Categorie.getCategorie((Integer)pair.getKey())).getNomCategorie(), 10.0);
 			}else if(ratio > 0.55){
-				sales.put((Integer)pair.getKey(), 20.0);
+				salesToInsert.put((Integer)pair.getKey(), 20.0);
+				salesToReturn.put((Categorie.getCategorie((Integer)pair.getKey())).getNomCategorie(), 20.0);
 			}else if(ratio > 0.70){
-				sales.put((Integer)pair.getKey(), 30.0);
+				salesToInsert.put((Integer)pair.getKey(), 30.0);
+				salesToReturn.put((Categorie.getCategorie((Integer)pair.getKey())).getNomCategorie(), 30.0);
 			}else if(ratio > 0.85){
-				sales.put((Integer)pair.getKey(), 40.0);
+				salesToInsert.put((Integer)pair.getKey(), 40.0);
+				salesToReturn.put((Categorie.getCategorie((Integer)pair.getKey())).getNomCategorie(), 40.0);
 			}
 
 			it.remove();
 		}
 			
-		if(!sales.isEmpty()){
-			Iterator it2 = sales.entrySet().iterator();
+		if(!salesToInsert.isEmpty()){
+			Iterator it2 = salesToInsert.entrySet().iterator();
 			while (it2.hasNext()) {
 				Map.Entry pair = (Map.Entry)it2.next();
 				Promotion.ajoutPromo((Integer)pair.getKey(), (double)pair.getValue());
@@ -77,7 +81,7 @@ public class DefinirPromotion {
 				it2.remove();
 			}
 		}
-		return sales;
+		return salesToReturn;
 	}
 	
 

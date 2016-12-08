@@ -122,4 +122,14 @@ public class SuperMarche {
         session.update(this);
         session.close();
 	}
+
+	public void nouvelAn() {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        
+        this.setNb_jours_promo_restants(10);
+        
+        session.update(this);
+        session.close();
+	}
 }

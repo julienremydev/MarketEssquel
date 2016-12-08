@@ -1,5 +1,9 @@
 package modele;
 
+import org.hibernate.Session;
+
+import util.HibernateUtil;
+
 public class Categorie {
 
 	private int idCategorie;
@@ -24,8 +28,13 @@ public class Categorie {
 	}
 
 	public static Categorie getCategorie(Integer idCat) {
-		// TODO Auto-generated method stub
-		return null;
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        
+        Categorie cat = (Categorie)session.load(Categorie.class, idCat);
+        
+        session.close();
+        return cat;
 	}
 	
 	
