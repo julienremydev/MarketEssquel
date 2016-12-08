@@ -38,11 +38,11 @@ public class AgentGestion extends TickerBehaviour{
 			ACLMessage achatProduit = new ACLMessage(ACLMessage.INFORM);
 			achatProduit.addReceiver(new AID("AgentAchat", AID.ISLOCALNAME));
 
-			Rechercher rech = new Rechercher();
-			rech.reference = ((Product)pair.getKey()).getReference();
-			rech.prixMax = (Double)pair.getValue();
+			InitierAchat ia = new InitierAchat();
+			ia.idProduit = ((Product)pair.getKey()).getIdProduct();
+			ia.quantite = (int) pair.getValue();
 
-			achatProduit.setContentObject(rech);
+			achatProduit.setContentObject(ia);
 			this.getAgent().send(achatProduit);
 
 			it.remove();
@@ -73,3 +73,7 @@ public class AgentGestion extends TickerBehaviour{
 		block();
 	}
 }
+
+//if(!sales.isEmpty()){
+//	
+//}
