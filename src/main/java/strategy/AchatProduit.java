@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.Query;
+
 import modele.Achat;
 import modele.Prix;
 import modele.Product;
@@ -58,7 +59,7 @@ public class AchatProduit {
 	public AchatProduit ( SuperMarche s ){
 		this.setS(s);
 		//Ajouter tous les produits High-Tech et tous les autres produits 
-		listeProduitsStrategiques = Arrays.asList(Product.getProduit(24),Product.getProduit(25),Product.getProduit(26),Product.getProduit(27));
+		listeProduitsStrategiques = Arrays.asList(Product.getProduct(24),Product.getProduct(25),Product.getProduct(26),Product.getProduct(27));
 		
 	}
 
@@ -98,11 +99,11 @@ public class AchatProduit {
 		//mettre a jour les stocks -> parcourir tous les produits
 		for (Product p : lp){
 			if(p.getCategorie().equals("High-tech") && getNombreProduitsDansStock(p) < seuil_produits_ht){
-					hash.put(p.getNomProduit(), seuil_produits_ht - getNombreProduitsDansStock(p));
+					hash.put(p.getNomProduct(), seuil_produits_ht - getNombreProduitsDansStock(p));
 			}else if (listeProduitsStrategiques.contains(p) && getNombreProduitsDansStock(p) < seuil_produits_prioritaires){
-				hash.put(p.getNomProduit(), seuil_produits_prioritaires - getNombreProduitsDansStock(p));
+				hash.put(p.getNomProduct(), seuil_produits_prioritaires - getNombreProduitsDansStock(p));
 			}else if (getNombreProduitsDansStock(p) < seuil_produits_min){
-				hash.put(p.getNomProduit(), seuil_produits_min - getNombreProduitsDansStock(p));
+				hash.put(p.getNomProduct(), seuil_produits_min - getNombreProduitsDansStock(p));
 			}
 		}
 		if ( hash.size() != 0)
@@ -129,7 +130,7 @@ public class AchatProduit {
 	
 	//Dernier prix auquel on a vendu le produit
 	private float getPrixProduitVendu(Product p){
-		return Prix.getPrixProduit(p).getPrix();
+		return Prix.getPrixProduit(p);
 	}
 	//Prix actuel du produit de la concurrence
 	private void getPrixProduitVenduConcurrence(){

@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import fr.miage.agents.api.model.Categorie;
 import fr.miage.agents.api.model.Produit;
+import modele.Prix;
+import modele.Product;
 import modele.Stock;
 
 public class PrixVente {
@@ -12,13 +14,13 @@ public class PrixVente {
 	//evaluation
 	//doubler la méthode sans la concurrence
 	
-	public static float setPrixVente(Produit produit, float prixAchat, int date) {
+	public static float setPrixVente(Product product, float prixAchat, int date) {
 		float prixVente = prixAchat;
 
 		//traitement priorite
-		prixVente *= Prix.getTop(produit);
+		prixVente *= PrixVente.getTop(product);
 
-		if (produit.idCategorie.nomCategorie.equals("High-tech")) {
+		if (product.getCategorie().equals("High-tech")) {
 			prixVente *= 1.1;
 		}
 		else {
@@ -27,23 +29,21 @@ public class PrixVente {
 
 
 		//traitement conccurence
-		float prixConccurence = Prix.getPrixConccurence(produit);
+		float prixConccurence = PrixVente.getPrixConccurence(product);
 		
 		while (prixConccurence>prixVente*1.2) {
 			prixVente*=0.98;
 		}
-		prixVente=prixVente*(float) getCoeffDate(produit);
+		prixVente=prixVente*(float) getCoeffDate(product);
 		return prixVente;
-	}
-	
-	public static float 
+	} 
 
-	public static float getPrixConccurence(Produit produit) {
+	public static float getPrixConccurence(Product product) {
 		//appel bdd via agent au supermarche2
 		return 0;
 	}
 
-	public static double getTop (Produit produit) {
+	public static double getTop (Product product) {
 		//appel bdd pour connaitre le classement de vente du produit
 		int top = 0;
 		switch (top) {
@@ -58,7 +58,7 @@ public class PrixVente {
 		}
 	}
 
-	public static double getCoeffDate(Produit produit) {
+	public static double getCoeffDate(Product product) {
 		ArrayList<HashMap<Categorie,Double>> list = new ArrayList<HashMap<Categorie,Double>>();
 		HashMap<Categorie,Double> map0 = new HashMap<Categorie,Double>();
 		HashMap<Categorie,Double> map1 = new HashMap<Categorie,Double>();
@@ -92,9 +92,9 @@ public class PrixVente {
 		list.add(map1);
 		list.add(map2);
 		list.add(map3);
-		int nbJours = Stock.getDateAchat(produit);
-		Categorie categorie = produit.idCategorie;
-		int coeffNbJours = nbJours % 7;
+		long nbJours = Stock.getDateAchat(product);
+		Categorie categorie = product.idCategorie;
+		int coeffNbJours = (int) (nbJours % 7);
 		return list.get(coeffNbJours).get(categorie);
 
 	}

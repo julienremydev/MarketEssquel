@@ -33,7 +33,7 @@ public class Promotion {
 		HashMap<String, Double> ratiosVieuxStocks = new HashMap();
 		String[] categories = {"cosmétique", "High-tech", "Produit d'entretien"};
 		for(int i=0; i<categories.length; i++){
-			List<Product> products = Product.getProduits(categories[0]);
+			List<Product> products = Product.getCategorieProduct(categories[0]);
 			ratiosVieuxStocks.put(categories[0], calculRationStockCategorie(products));
 		}
 		

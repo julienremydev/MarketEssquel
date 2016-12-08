@@ -5,6 +5,7 @@ import java.util.Date;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import fr.miage.agents.api.model.Produit;
 import util.HibernateUtil;
 
 public class Stock {

@@ -15,7 +15,7 @@ import util.HibernateUtil;
 public class AppelBDD {
 
 	public static ResultatRecherche search(Rechercher recherche) {
-		List<Product> list = rechercheParCategorie(recherche.categorie.nomCategorie);
+		List<Product> list = rechercheParCategorie(recherche.nomCategorie);
 		List<fr.miage.agents.api.model.Produit> returnList = new ArrayList<fr.miage.agents.api.model.Produit>();
 		for (Product p : list) {
 			Produit produit = new Produit();
