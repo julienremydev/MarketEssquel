@@ -21,7 +21,7 @@ public class Run {
 		
 		
 		System.out.println(ap.getAllProduits());
-		//System.out.println(ap.getListeProduitsStrategiques().get(0).getNomProduct());
+		System.out.println(ap.getListeproductsStrategiques().get(0).getNomProduct());
 		//session.save(user);
 		//session.getTransaction().commit();
 
