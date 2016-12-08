@@ -14,7 +14,7 @@
         <property name="date" type="java.util.Date">
             <column name="DATE" />
         </property>
-        <many-to-one name="produit" class="modele.Produit" fetch="join">
+        <many-to-one name="produit" class="modele.Product" fetch="join">
             <column name="PRODUIT" />
         </many-to-one>
         <property name="prix_unitaire" type="int">

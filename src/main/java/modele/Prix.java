@@ -12,16 +12,16 @@ public class Prix {
 	private int id;
 	private float prix;
 	private Date date;
-	private Produit produit;
+	private Product product;
 	
 	public Prix(){}
 
 	
-	public Prix(float prix, Date date, Produit produit) {
+	public Prix(float prix, Date date, Product product) {
 		super();
 		this.prix = prix;
 		this.date = date;
-		this.produit = produit;
+		this.product = product;
 	}
 
 
@@ -49,26 +49,27 @@ public class Prix {
 		this.date = date;
 	}
 
-	public Produit getProduit() {
-		return produit;
+	public Product getProduit() {
+		return product;
 	}
 
-	public void setProduit(Produit produit) {
-		this.produit = produit;
+	public void setProduit(Product product) {
+		this.product = product;
 	}
 	
-	public static Prix getPrixProduit(Produit produit){
+	public static float getPrixProduit(Product product){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
         String hql = "SELECT p FROM Prix p WHERE p.produit=:produit ORDER BY p.date DESC";
         Query query = session.createQuery(hql);
-        query.setParameter("produit", produit);
+        query.setParameter("produit", product);
         
-        Prix prix = null;
+        float prix = (Float) null;
         
+        //no check
         if(!query.list().isEmpty()){
-        	prix = (Prix)query.list().get(0);
+        	prix = (float)query.list().get(0);
         }
         
         session.close();
@@ -76,14 +77,14 @@ public class Prix {
         return prix;
 	}
 	
-	public static void ajoutPrix(float prix, Date date, Produit produit){
+	public static void ajoutPrix(float prix, Date date, Product product){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
         Prix newP = new Prix();
         newP.setPrix(prix);
         newP.setDate(date);
-        newP.setProduit(produit);
+        newP.setProduit(product);
         
         session.save(newP);
         session.close();

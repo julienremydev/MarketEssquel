@@ -8,7 +8,7 @@
             <column name="ID" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="produit" class="modele.Produit" fetch="join">
+        <many-to-one name="produit" class="modele.Product" fetch="join">
             <column name="PRODUIT" />
         </many-to-one>
         <property name="quantite" type="int">

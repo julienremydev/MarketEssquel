@@ -2,8 +2,8 @@ package modele;
 
 import java.util.Date;
 
-import org.hibernate.Session;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 import util.HibernateUtil;
 
@@ -12,18 +12,18 @@ public class Achat {
 	private int quantite;
 	private Date date;
 	//private Fournisseur fournisseur;
-	private Produit produit;
+	private Product product;
 	private int prix_unitaire;
 	
 	public Achat(){}
 
-	public static Achat getPrixProduitAchete(Produit produit){
+	public static Achat getPrixProduitAchete(Product product){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
         String hql = "SELECT a FROM Achat a WHERE p.produit=:produit ORDER BY p.date DESC";
         Query query = session.createQuery(hql);
-        query.setParameter("produit", produit);
+        query.setParameter("produit", product);
         
         Achat achat = null;
         
@@ -60,12 +60,12 @@ public class Achat {
 		this.date = date;
 	}
 
-	public Produit getProduit() {
-		return produit;
+	public Product getProduct() {
+		return product;
 	}
 
-	public void setProduit(Produit produit) {
-		this.produit = produit;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 
 	public int getPrix_unitaire() {

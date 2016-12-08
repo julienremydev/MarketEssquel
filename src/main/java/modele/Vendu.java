@@ -13,7 +13,7 @@ public class Vendu {
 	private int id;
 	private int quantite;
 	private Date date;
-	private Produit produit;
+	private Product product;
 	
 	public Vendu(){}
 
@@ -41,15 +41,15 @@ public class Vendu {
 		this.date = date;
 	}
 
-	public Produit getProduit() {
-		return produit;
+	public Product getProduit() {
+		return product;
 	}
 
-	public void setProduit(Produit produit) {
-		this.produit = produit;
+	public void setProduit(Product product) {
+		this.product = product;
 	}
 	
-	public static List<Produit> getTopProduit(){
+	public static List<Product> getTopProduit(){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         

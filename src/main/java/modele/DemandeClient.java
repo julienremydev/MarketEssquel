@@ -3,21 +3,21 @@ package modele;
 public class DemandeClient {
 
 	private int id;
-	private Produit produit;
+	private Product product;
 	
 	private int quantite;
 	
-	public DemandeClient (Produit produit, int quantite){
-		this.setProduit(produit);
+	public DemandeClient (Product product, int quantite){
+		this.setProduit(product);
 		this.setQuantite(quantite);
 	}
 
-	public Produit getProduit() {
-		return produit;
+	public Product getProduit() {
+		return product;
 	}
 
-	public void setProduit(Produit produit) {
-		this.produit = produit;
+	public void setProduit(Product product) {
+		this.product = product;
 	}
 
 	public int getQuantite() {

@@ -12,7 +12,7 @@ public class Stock {
 	private int id;
 	private int quantite;
 	private Date dateAchat;
-	private Produit produit;
+	private Product product;
 	
 	public Stock(){}
 
@@ -40,21 +40,21 @@ public class Stock {
 		this.dateAchat = dateAchat;
 	}
 
-	public Produit getProduit() {
-		return produit;
+	public Product getProduit() {
+		return product;
 	}
 
-	public void setProduit(Produit produit) {
-		this.produit = produit;
+	public void setProduit(Product product) {
+		this.product = product;
 	}
 
-	public static long getDateAchat(Produit produit) {
+	public static long getDateAchat(Product product) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
         String hql = "SELECT s.dateAchat FROM Stock s WHERE s.produit=:produit AND s.quantite > 0 ORDER BY s.dateAchat ASC";
         Query query = session.createQuery(hql);
-        query.setParameter("produit", produit);
+        query.setParameter("produit", product);
         
         Date dateAchat = null;
         long dateDiff = -1;

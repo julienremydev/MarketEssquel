@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 3 d?c. 2016 23:34:04 by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="modele.Produit" table="PRODUIT">
+    <class name="modele.Product" table="PRODUIT">
         <id name="idProduit" type="long">
             <column name="IDPRODUIT" />
             <generator class="increment"/>

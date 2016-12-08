@@ -8,7 +8,7 @@ import java.util.List;
 import org.hibernate.Query;
 import modele.Achat;
 import modele.Prix;
-import modele.Produit;
+import modele.Product;
 import modele.SuperMarche;
 import modele.Vendu;
 import util.HibernateUtil;
@@ -43,7 +43,7 @@ import util.HibernateUtil;
  */
 public class AchatProduit {
 	private SuperMarche s;
-	List<Produit> listeProduitsStrategiques;
+	List<Product> listeProduitsStrategiques;
 	//private ArrayList<Produit> listeProduitsStrategiques = new ArrayList<Produit>  ();
 	private int seuil_produits_ht = 20;
 	private int seuil_produits_prioritaires = 30;
@@ -58,16 +58,16 @@ public class AchatProduit {
 	public AchatProduit ( SuperMarche s ){
 		this.setS(s);
 		//Ajouter tous les produits High-Tech et tous les autres produits 
-		listeProduitsStrategiques = Arrays.asList(Produit.getProduit(24),Produit.getProduit(25),Produit.getProduit(26),Produit.getProduit(27));
+		listeProduitsStrategiques = Arrays.asList(Product.getProduit(24),Product.getProduit(25),Product.getProduit(26),Product.getProduit(27));
 		
 	}
 
-	public int getNombreProduitsDansStock(Produit produit) {
+	public int getNombreProduitsDansStock(Product product) {
 		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 		
 		String hql = "SELECT count(*) FROM Stock s WHERE s.produit=:produit";
         Query query =  HibernateUtil.getSessionFactory().getCurrentSession().createQuery(hql);
-        query.setParameter("produit", produit);
+        query.setParameter("produit", product);
 		
 		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
          
@@ -76,14 +76,14 @@ public class AchatProduit {
 	}
 	@SuppressWarnings("unchecked")
 	public List getAllProduits() {
-	List<Produit> produit = new ArrayList<Produit>();
+	List<Product> product = new ArrayList<Product>();
 	HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 	
-	produit = HibernateUtil.getSessionFactory().getCurrentSession().createQuery("from Produit").list();
+	product = HibernateUtil.getSessionFactory().getCurrentSession().createQuery("from Produit").list();
 	
 	HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
-	if (produit.size() > 0) {
-		return produit;
+	if (product.size() > 0) {
+		return product;
 	} else {
 		return null;
 	}
@@ -94,9 +94,9 @@ public class AchatProduit {
 	private HashMap<String, Integer> getWhatToBuy(){
 		//PRENDRE EN COMPTE LES DEMANDES CLIENTS -> appel méthode de maj liste
 		HashMap<String, Integer> hash = new HashMap<String, Integer> ();
-		List<Produit> lp = getAllProduits();
+		List<Product> lp = getAllProduits();
 		//mettre a jour les stocks -> parcourir tous les produits
-		for (Produit p : lp){
+		for (Product p : lp){
 			if(p.getCategorie().equals("High-tech") && getNombreProduitsDansStock(p) < seuil_produits_ht){
 					hash.put(p.getNomProduit(), seuil_produits_ht - getNombreProduitsDansStock(p));
 			}else if (listeProduitsStrategiques.contains(p) && getNombreProduitsDansStock(p) < seuil_produits_prioritaires){
@@ -128,7 +128,7 @@ public class AchatProduit {
 	}
 	
 	//Dernier prix auquel on a vendu le produit
-	private float getPrixProduitVendu(Produit p){
+	private float getPrixProduitVendu(Product p){
 		return Prix.getPrixProduit(p).getPrix();
 	}
 	//Prix actuel du produit de la concurrence
@@ -136,7 +136,7 @@ public class AchatProduit {
 		//RETURN PRIX
 	}
 	//Dernier prix auquel on a acheté le produit
-	private float getPrixProduitAchete(Produit p){
+	private float getPrixProduitAchete(Product p){
 		return Achat.getPrixProduitAchete(p).getPrix_unitaire();
 	}
 	
@@ -149,11 +149,11 @@ public class AchatProduit {
 		this.s = s;
 	}
 
-	public List<Produit> getListeProduitsStrategiques() {
+	public List<Product> getListeProduitsStrategiques() {
 		return listeProduitsStrategiques;
 	}
 
-	public void setListeProduitsStrategiques(ArrayList<Produit> listeProduitsStrategiques) {
+	public void setListeProduitsStrategiques(ArrayList<Product> listeProduitsStrategiques) {
 		this.listeProduitsStrategiques = listeProduitsStrategiques;
 	}
 

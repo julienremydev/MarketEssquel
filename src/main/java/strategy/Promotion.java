@@ -10,7 +10,7 @@ import fr.miage.agents.api.message.recherche.Rechercher;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.ArrayList;
-import modele.Produit;
+import modele.Product;
 import modele.Stock;
 import modele.SuperMarche;
 
@@ -33,8 +33,8 @@ public class Promotion {
 		HashMap<String, Double> ratiosVieuxStocks = new HashMap();
 		String[] categories = {"cosmétique", "High-tech", "Produit d'entretien"};
 		for(int i=0; i<categories.length; i++){
-			List<Produit> produits = Produit.getProduits(categories[0]);
-			ratiosVieuxStocks.put(categories[0], calculRationStockCategorie(produits));
+			List<Product> products = Product.getProduits(categories[0]);
+			ratiosVieuxStocks.put(categories[0], calculRationStockCategorie(products));
 		}
 		
 		
@@ -79,12 +79,12 @@ public class Promotion {
 		return ratio;
 	}	
 	
-	private static Double calculRationStockCategorie(List<Produit> produits) {
+	private static Double calculRationStockCategorie(List<Product> products) {
 		double cumulRatio = 0;
-		int nbProduitsCategorie = produits.size();
+		int nbProduitsCategorie = products.size();
 		
-		for(Produit produit : produits){
-			Stock stock = Stock.getVieuxStock(produit);
+		for(Product product : products){
+			Stock stock = Stock.getVieuxStock(product);
 			Date date = stock.getDateAchat();
 			int quantite = stock.getQuantite();
 			double ratioProduit = 1;
