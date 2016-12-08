@@ -112,4 +112,14 @@ public class SuperMarche {
 	public void setNb_jours_promo_restants(int nb_jours_promo_restants) {
 		this.nb_jours_promo_restants = nb_jours_promo_restants;
 	}
+
+	public void promoPrevue() {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        
+        this.setNb_jours_promo_restants(this.getNb_jours_promo_restants()-2);
+        
+        session.update(this);
+        session.close();
+	}
 }

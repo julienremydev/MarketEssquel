@@ -26,7 +26,7 @@ public class DefinirPromotion {
 		/*
 		 * Calcul du ratio par rapport au capital du super marché
 		 */
-		SuperMarche market = SuperMarche.getSuperMarche("MarketEssquel");
+		SuperMarche market = SuperMarche.getSuperMarches().get(0);
 		int nbJoursPromos = market.getNb_jours_promo_restants();
 		
 		if(nbJoursPromos <= 0){
@@ -73,6 +73,7 @@ public class DefinirPromotion {
 			while (it2.hasNext()) {
 				Map.Entry pair = (Map.Entry)it2.next();
 				Promotion.ajoutPromo((Integer)pair.getKey(), (double)pair.getValue());
+				market.promoPrevue();
 				it2.remove();
 			}
 		}
