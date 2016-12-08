@@ -92,7 +92,7 @@ public class AchatProduit {
 	
 	//Méthode appelée à intervalle de temps régulier
 	// return une HASHMAP : clé=ref product, valeur=quantité demandée
-	private HashMap<Product, Integer> getWhatToBuy(){
+	public static HashMap<Product, Integer> getWhatToBuy(){
 		//PRENDRE EN COMPTE LES DEMANDES CLIENTS -> appel méthode de maj liste
 		HashMap<Product, Integer> hash = new HashMap<Product, Integer> ();
 		List<Product> lp = getAllProduits();

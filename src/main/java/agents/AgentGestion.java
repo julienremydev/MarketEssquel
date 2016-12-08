@@ -1,14 +1,11 @@
 package agents;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import fr.miage.agents.api.message.Message;
-import fr.miage.agents.api.message.TypeMessage;
 import fr.miage.agents.api.message.negociation.InitierAchat;
-import fr.miage.agents.api.message.recherche.Rechercher;
 import fr.miage.agents.api.message.util.PrevenirSolde;
 import jade.core.AID;
 import jade.core.Agent;
@@ -42,8 +39,12 @@ public class AgentGestion extends TickerBehaviour{
 			ia.idProduit = ((Product)pair.getKey()).getIdProduct();
 			ia.quantite = (int) pair.getValue();
 
-			achatProduit.setContentObject(ia);
-			this.getAgent().send(achatProduit);
+			try {
+				achatProduit.setContentObject(ia);
+				this.getAgent().send(achatProduit);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 			it.remove();
 		}
@@ -66,8 +67,13 @@ public class AgentGestion extends TickerBehaviour{
 			PrevenirSolde ps = new PrevenirSolde();
 			ps.categoriesSoldees = salesOrganize;
 
-			sales.setContentObject(ps);
-			this.getAgent().send(sales);
+			try {
+				sales.setContentObject(ps);
+				this.getAgent().send(sales);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		block();
