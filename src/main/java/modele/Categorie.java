@@ -5,10 +5,7 @@ public class Categorie {
 	private int idCategorie;
 	private String nomCategorie;
 	
-	public Categorie( int idCategorie, String nomCategorie ){
-		this.setIdCategorie(idCategorie);
-		this.setNomCategorie(nomCategorie);
-	}
+	public Categorie(){}
 
 	public int getIdCategorie() {
 		return idCategorie;
