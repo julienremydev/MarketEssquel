@@ -3,22 +3,22 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 8 d?c. 2016 18:23:15 by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="modele.Achat" table="ACHAT">
+    <class name="modele.Promotion" table="PROMOTION">
         <id name="id" type="int">
             <column name="ID" />
             <generator class="assigned" />
         </id>
-        <property name="quantite" type="int">
-            <column name="QUANTITE" />
+        <property name="dateDebut" type="java.util.Date">
+            <column name="DATEDEBUT" />
         </property>
-        <property name="date" type="java.util.Date">
-            <column name="DATE" />
+        <property name="dateFin" type="java.util.Date">
+            <column name="DATEFIN" />
         </property>
-        <many-to-one name="product" class="modele.Product" access="field" fetch="join">
-            <column name="PRODUCT" />
+        <many-to-one name="promosCategorie" class="modele.Categorie" fetch="join">
+            <column name="PROMOSCATEGORIE" />
         </many-to-one>
-        <property name="prix_unitaire" type="int">
-            <column name="PRIX_UNITAIRE" />
+        <property name="promo" type="double">
+            <column name="PROMO" />
         </property>
     </class>
 </hibernate-mapping>

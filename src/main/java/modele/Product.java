@@ -5,8 +5,6 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import fr.miage.agents.api.model.Categorie;
-import fr.miage.agents.api.model.Produit;
 import util.HibernateUtil;
 
 public class Product {
@@ -17,7 +15,7 @@ public class Product {
 
 	private String descriptionProduct;
 
-	private String categorie;
+	private Categorie categorie;
 
 	private String marque;
 
@@ -34,7 +32,7 @@ public class Product {
 
 	}
 
-	public static void ajoutProduct(long ref, String nom){
+	public static void ajoutproduct(long ref, String nom){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 
@@ -55,18 +53,18 @@ public class Product {
 		Query query = session.createQuery(hql);
 		query.setParameter("ref", ref);
 
-		Product product = null;
+		Product Product = null;
 
 		if(!query.list().isEmpty()){
-			product = (Product)query.list().get(0);
+			Product = (Product)query.list().get(0);
 		}
 
 		session.close();
 
-		return product;
+		return Product;
 	}
 
-	public static List<Product> getCategorieProduct(String categorie){
+	public static List<Product> getCategorieproduct(String categorie){
 
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
@@ -91,8 +89,8 @@ public class Product {
 	}
 
 
-	public void setIdProduct(long idProduct) {
-		this.idProduct = idProduct;
+	public void setIdProduct(long idproduct) {
+		this.idProduct = idproduct;
 	}
 
 
@@ -101,8 +99,8 @@ public class Product {
 	}
 
 
-	public void setNomProduct(String nomProduct) {
-		this.nomProduct = nomProduct;
+	public void setNomProduct(String nomproduct) {
+		this.nomProduct = nomproduct;
 	}
 
 
@@ -121,23 +119,23 @@ public class Product {
 	}
 
 
-	public void setDescriptionProduct(String descriptionProduct) {
-		this.descriptionProduct = descriptionProduct;
+	public void setDescriptionProduct(String descriptionproduct) {
+		this.descriptionProduct = descriptionproduct;
 	}
 
 
-	public String getCategorie() {
+	public Categorie getCategorie() {
 		return categorie;
 	}
 
 
-	public void setCategorie(String categorie) {
+	public void setCategorie(Categorie categorie) {
 		this.categorie = categorie;
 	}
 
 	//TODO
-	public Produit getCloneProduit(float prix) {
-		Produit p = new Produit();
+	public Product getCloneProduct(float prix) {
+		Product p = new Product();
 		//p.idCategorie=this.categorie;
 		return null;
 	}

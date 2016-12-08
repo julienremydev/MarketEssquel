@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 4 d?c. 2016 16:54:10 by Hibernate Tools 3.5.0.Final -->
+<!-- Generated 8 d?c. 2016 18:23:15 by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
     <class name="modele.Stock" table="STOCK">
         <id name="id" type="int">
@@ -14,8 +14,8 @@
         <property name="dateAchat" type="java.util.Date">
             <column name="DATEACHAT" />
         </property>
-        <many-to-one name="produit" class="modele.Product" fetch="join">
-            <column name="PRODUIT" />
+        <many-to-one name="product" class="modele.Product" access="field" fetch="join">
+            <column name="PRODUCT" />
         </many-to-one>
     </class>
 </hibernate-mapping>

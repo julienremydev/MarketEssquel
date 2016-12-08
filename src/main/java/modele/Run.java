@@ -16,11 +16,12 @@ public class Run {
 		 
 		//session.beginTransaction();
 		
-		//SuperMarche s = getSuperMarche();
-		AchatProduit ap = new AchatProduit();
- 
+		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
+		AchatProduit ap = new AchatProduit(s);
+		
+		
 		System.out.println(ap.getAllProduits());
- 
+		//System.out.println(ap.getListeProduitsStrategiques().get(0).getNomProduct());
 		//session.save(user);
 		//session.getTransaction().commit();
 

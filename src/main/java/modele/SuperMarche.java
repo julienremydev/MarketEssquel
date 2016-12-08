@@ -13,6 +13,7 @@ public class SuperMarche {
 	private float capital;
 	private int stock;
 	private int MAX_STOCK;
+	private int nb_jours_promo_restants;
 	
 	public SuperMarche(){}
 
@@ -102,5 +103,13 @@ public class SuperMarche {
 
 	public void setMAX_STOCK(int mAX_STOCK) {
 		MAX_STOCK = mAX_STOCK;
+	}
+
+	public int getNb_jours_promo_restants() {
+		return nb_jours_promo_restants;
+	}
+
+	public void setNb_jours_promo_restants(int nb_jours_promo_restants) {
+		this.nb_jours_promo_restants = nb_jours_promo_restants;
 	}
 }

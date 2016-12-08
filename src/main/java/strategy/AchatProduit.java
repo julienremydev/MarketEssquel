@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.Query;
-
 import modele.Achat;
 import modele.Prix;
 import modele.Product;
@@ -15,22 +14,22 @@ import modele.Vendu;
 import util.HibernateUtil;
 /**
  * 
- * il faut que les produits les plus rentables (qui font le plus de marge), et ceux qui sont à l’image de l’enseigne ( high-tech ), 
+ * il faut que les products les plus rentables (qui font le plus de marge), et ceux qui sont à l’image de l’enseigne ( high-tech ), 
  * soient les plus disponibles. 
  * 
  * 
  * Stratégie de notre agent:
- * Notre supermarché est spécialisé dans les produits High-Tech (prendre en compte la décroissance de désirabilité des produits High-Tech)
- * Nous devons avoir en rayon tous les produits High-Tech disponibles.
- * Nous avons une liste de produits qui doivent toujours être présent en magasin (produits high-tech, produits qui se vendent le plus)
- * Pour ces produits, quand le stock est inférieur à un certain seuil, nous effectuons un achat.
- * Au bout d'un certain nombre de demandes de produits que nous n'avons pas, nous effectuons un achat, et le produit peut passer dans la liste des produits.
+ * Notre supermarché est spécialisé dans les products High-Tech (prendre en compte la décroissance de désirabilité des products High-Tech)
+ * Nous devons avoir en rayon tous les products High-Tech disponibles.
+ * Nous avons une liste de products qui doivent toujours être présent en magasin (products high-tech, products qui se vendent le plus)
+ * Pour ces products, quand le stock est inférieur à un certain seuil, nous effectuons un achat.
+ * Au bout d'un certain nombre de demandes de products que nous n'avons pas, nous effectuons un achat, et le product peut passer dans la liste des products.
  * 
- * Nous effectuons des achats en grande quantité des produits qui se vendent le plus et que nous sommes sûrs d'écouler.
+ * Nous effectuons des achats en grande quantité des products qui se vendent le plus et que nous sommes sûrs d'écouler.
  * 
- * Si c'est la première fois que nous achetons des produits au fournisseur et que l'autre supermarché ne le vend pas,
+ * Si c'est la première fois que nous achetons des products au fournisseur et que l'autre supermarché ne le vend pas,
  * nous acceptons la première offre du fournisseur.
- * Si c'est la première fois que nous achetons un produit et que l'autre supermarché vend le produit, nous nous basons
+ * Si c'est la première fois que nous achetons un product et que l'autre supermarché vend le product, nous nous basons
  * sur ce prix pour la négociation.
  * Sinon nous nous basons sur l'historique des achats et des ventes et sur le prix des concurrents.
  * 
@@ -39,36 +38,37 @@ import util.HibernateUtil;
  * Par exemple si les carottes sont vendues par les markets 2$ en moyenne, et si l'on souhaite en acheter 10,
  * on n'achète pas  le lot au dessus de 20$.
  * 
- * On vend tous les produits qui existent.
+ * On vend tous les products qui existent.
  *
  */
 public class AchatProduit {
 	private SuperMarche s;
-	List<Product> listeProduitsStrategiques;
-	//private ArrayList<Produit> listeProduitsStrategiques = new ArrayList<Produit>  ();
-	private int seuil_produits_ht = 20;
-	private int seuil_produits_prioritaires = 30;
-	private int seuil_produits_min = 5;
+	List<Product> listeproductsStrategiques;
+	//private ArrayList<product> listeproductsStrategiques = new ArrayList<product>  ();
+	private int seuil_products_ht = 20;
+	private int seuil_products_prioritaires = 30;
+	private int seuil_products_min = 5;
 	
-	//Mise à jour des produits prioritaires
-	public void majListeProduitsStrategiques (){
-		//Parcourir tous les produits et vérifier si ils se sont correctement vendus récemment
+	//Mise à jour des products prioritaires
+	public void majListeproductsStrategiques (){
+		//Parcourir tous les products et vérifier si ils se sont correctement vendus récemment
 		//Sinon les virer de la liste
+		
 	}
 	public AchatProduit(){}
 	public AchatProduit ( SuperMarche s ){
 		this.setS(s);
-		//Ajouter tous les produits High-Tech et tous les autres produits 
-		listeProduitsStrategiques = Arrays.asList(Product.getProduct(24),Product.getProduct(25),Product.getProduct(26),Product.getProduct(27));
+		//Ajouter tous les products High-Tech et tous les autres products 
+		listeproductsStrategiques = Arrays.asList(Product.getProduct(24),Product.getProduct(25),Product.getProduct(26),Product.getProduct(27));
 		
 	}
 
-	public int getNombreProduitsDansStock(Product product) {
+	public int getNombreproductsDansStock(Product product) {
 		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 		
-		String hql = "SELECT count(*) FROM Stock s WHERE s.produit=:produit";
+		String hql = "SELECT count(*) FROM Stock s WHERE s.product=:product";
         Query query =  HibernateUtil.getSessionFactory().getCurrentSession().createQuery(hql);
-        query.setParameter("produit", product);
+        query.setParameter("product", product);
 		
 		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
          
@@ -80,7 +80,7 @@ public class AchatProduit {
 	List<Product> product = new ArrayList<Product>();
 	HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 	
-	product = HibernateUtil.getSessionFactory().getCurrentSession().createQuery("from Produit").list();
+	product = HibernateUtil.getSessionFactory().getCurrentSession().createQuery("from Product").list();
 	
 	HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
 	if (product.size() > 0) {
@@ -91,19 +91,32 @@ public class AchatProduit {
 }
 	
 	//Méthode appelée à intervalle de temps régulier
-	// return une HASHMAP : clé=ref produit, valeur=quantité demandée
-	private HashMap<String, Integer> getWhatToBuy(){
+	// return une HASHMAP : clé=ref product, valeur=quantité demandée
+	private HashMap<Product, Integer> getWhatToBuy(){
 		//PRENDRE EN COMPTE LES DEMANDES CLIENTS -> appel méthode de maj liste
-		HashMap<String, Integer> hash = new HashMap<String, Integer> ();
+		HashMap<Product, Integer> hash = new HashMap<Product, Integer> ();
 		List<Product> lp = getAllProduits();
-		//mettre a jour les stocks -> parcourir tous les produits
+		
+		int nb_prod_voulus = 0;
+		//mettre a jour les stocks -> parcourir tous les products
 		for (Product p : lp){
-			if(p.getCategorie().equals("High-tech") && getNombreProduitsDansStock(p) < seuil_produits_ht){
-					hash.put(p.getNomProduct(), seuil_produits_ht - getNombreProduitsDansStock(p));
-			}else if (listeProduitsStrategiques.contains(p) && getNombreProduitsDansStock(p) < seuil_produits_prioritaires){
-				hash.put(p.getNomProduct(), seuil_produits_prioritaires - getNombreProduitsDansStock(p));
-			}else if (getNombreProduitsDansStock(p) < seuil_produits_min){
-				hash.put(p.getNomProduct(), seuil_produits_min - getNombreProduitsDansStock(p));
+			int nb_products_dans_stock = getNombreproductsDansStock(p);
+			if(p.getCategorie().equals("High-tech") && nb_products_dans_stock < seuil_products_ht){
+				//On vérifie si le nombre total de products qu'on souhaite commander ne va pas engendrer le dépassement des stocks
+				if (seuil_products_ht - nb_products_dans_stock + s.getStock() + nb_prod_voulus <= s.getMAX_STOCK() ){
+					nb_prod_voulus+=seuil_products_ht - nb_products_dans_stock;
+					hash.put(p, seuil_products_ht - nb_products_dans_stock);
+				}	
+			}else if (listeproductsStrategiques.contains(p) && nb_products_dans_stock < seuil_products_prioritaires){
+				if (seuil_products_prioritaires - nb_products_dans_stock + s.getStock() + nb_prod_voulus <= s.getMAX_STOCK() ){
+					nb_prod_voulus+=seuil_products_prioritaires - nb_products_dans_stock;
+					hash.put(p, seuil_products_prioritaires - nb_products_dans_stock);
+				}
+			}else if (nb_products_dans_stock < seuil_products_min){
+				if (seuil_products_min - nb_products_dans_stock + s.getStock() + nb_prod_voulus <= s.getMAX_STOCK() ){
+					nb_prod_voulus+=seuil_products_min - nb_products_dans_stock;
+					hash.put(p, seuil_products_min - nb_products_dans_stock);
+				}
 			}
 		}
 		if ( hash.size() != 0)
@@ -115,12 +128,12 @@ public class AchatProduit {
 	
 	
 	
-	//Méthode appelée à chaque fois qu'un produit est vendu pour renflouer les stocks au besoin
+	//Méthode appelée à chaque fois qu'un product est vendu pour renflouer les stocks au besoin
 	private void achat(Vendu v){
-		//selectionner compte total du produit v.prdouit dans les stocks
-		//Si produit high tech ou prioritaire et inférieur au seuil : on achète
+		//selectionner compte total du product v.prdouit dans les stocks
+		//Si product high tech ou prioritaire et inférieur au seuil : on achète
 		
-		//Sinon si on a plus le produit ou si il n'est pas prioritaire on regarde si inférieur au seuil min si oui on achète
+		//Sinon si on a plus le product ou si il n'est pas prioritaire on regarde si inférieur au seuil min si oui on achète
 		
 		
 		
@@ -128,16 +141,16 @@ public class AchatProduit {
 		
 	}
 	
-	//Dernier prix auquel on a vendu le produit
-	private float getPrixProduitVendu(Product p){
+	//Dernier prix auquel on a vendu le product
+	private float getPrixproductVendu(Product p){
 		return Prix.getPrixProduit(p);
 	}
-	//Prix actuel du produit de la concurrence
-	private void getPrixProduitVenduConcurrence(){
+	//Prix actuel du product de la concurrence
+	private void getPrixproductVenduConcurrence(){
 		//RETURN PRIX
 	}
-	//Dernier prix auquel on a acheté le produit
-	private float getPrixProduitAchete(Product p){
+	//Dernier prix auquel on a acheté le product
+	private float getPrixproductAchete(Product p){
 		return Achat.getPrixProduitAchete(p).getPrix_unitaire();
 	}
 	
@@ -150,35 +163,35 @@ public class AchatProduit {
 		this.s = s;
 	}
 
-	public List<Product> getListeProduitsStrategiques() {
-		return listeProduitsStrategiques;
+	public List<Product> getListeproductsStrategiques() {
+		return listeproductsStrategiques;
 	}
 
-	public void setListeProduitsStrategiques(ArrayList<Product> listeProduitsStrategiques) {
-		this.listeProduitsStrategiques = listeProduitsStrategiques;
+	public void setListeproductsStrategiques(ArrayList<Product> listeproductsStrategiques) {
+		this.listeproductsStrategiques = listeproductsStrategiques;
 	}
 
-	public int getSeuil_produits_ht() {
-		return seuil_produits_ht;
+	public int getSeuil_products_ht() {
+		return seuil_products_ht;
 	}
 
-	public void setSeuil_produits_ht(int seuil_produit_ht) {
-		this.seuil_produits_ht = seuil_produit_ht;
+	public void setSeuil_products_ht(int seuil_product_ht) {
+		this.seuil_products_ht = seuil_product_ht;
 	}
 
-	public int getSeuil_produit_prioritaires() {
-		return seuil_produits_prioritaires;
+	public int getSeuil_product_prioritaires() {
+		return seuil_products_prioritaires;
 	}
 
-	public void setSeuil_produit_prioritaires(int seuil_produit_prioritaires) {
-		this.seuil_produits_prioritaires = seuil_produit_prioritaires;
+	public void setSeuil_product_prioritaires(int seuil_product_prioritaires) {
+		this.seuil_products_prioritaires = seuil_product_prioritaires;
 	}
 
-	public int getSeuil_produit_min() {
-		return seuil_produits_min;
+	public int getSeuil_product_min() {
+		return seuil_products_min;
 	}
 
-	public void setSeuil_produit_min(int seuil_produit_min) {
-		this.seuil_produits_min = seuil_produit_min;
+	public void setSeuil_product_min(int seuil_product_min) {
+		this.seuil_products_min = seuil_product_min;
 	}
 }

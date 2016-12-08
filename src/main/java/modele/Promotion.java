@@ -9,10 +9,11 @@ public class Promotion {
 	private int id;
 	private Date dateDebut;
 	private Date dateFin;
-	private HashMap<String, Integer> promosCategorie;
+	private Categorie promosCategorie;
+	private double promo;
 	
 	public Promotion(){
-		promosCategorie = new HashMap<>();
+		
 	}
 
 	public int getId() {
@@ -39,11 +40,21 @@ public class Promotion {
 		this.dateFin = dateFin;
 	}
 
-	public HashMap<String, Integer> getPromosCategorie() {
+	public Categorie getPromosCategorie() {
 		return promosCategorie;
 	}
 
-	public void setPromosCategorie(HashMap<String, Integer> promosCategorie) {
+	public void setPromosCategorie(Categorie promosCategorie) {
 		this.promosCategorie = promosCategorie;
 	}
+
+	public double getPromo() {
+		return promo;
+	}
+
+	public void setPromo(double promo) {
+		this.promo = promo;
+	}
+
+
 }

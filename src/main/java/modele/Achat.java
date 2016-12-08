@@ -60,11 +60,11 @@ public class Achat {
 		this.date = date;
 	}
 
-	public Product getProduct() {
+	public Product getProduit() {
 		return product;
 	}
 
-	public void setProduct(Product product) {
+	public void setProduit(Product product) {
 		this.product = product;
 	}
 

@@ -11,14 +11,16 @@
   <property name="hibernate.connection.username">sql7145543</property>
   <property name="hibernate.connection.password">s1nkVCycpf</property>
   <property name="show_sql">true</property>
-  <property name="hbm2ddl.auto">update</property>
+  <property name="hbm2ddl.auto">create</property>
   
   <!-- Mapping files -->
 		<mapping resource="Achat.hbm.xml" />
+		<mapping resource="Categorie.hbm.xml" />
 		<mapping resource="DemandeClient.hbm.xml" />
 		<mapping resource="Fournisseur.hbm.xml" />
 		<mapping resource="Prix.hbm.xml" />
-		<mapping resource="Produit.hbm.xml" />
+		<mapping resource="Product.hbm.xml" />
+		<mapping resource="Promotion.hbm.xml" />
 		<mapping resource="Stock.hbm.xml" />
 		<mapping resource="SuperMarche.hbm.xml" />
 		<mapping resource="Vendu.hbm.xml" />
