@@ -141,4 +141,10 @@ public class DefinirPromotion {
 		
 		return ratio;
 	}
+
+
+	public static HashMap<String, Double> calculRabaisNoel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
