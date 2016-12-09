@@ -2,10 +2,8 @@ package strategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import fr.miage.agents.api.model.Categorie;
 import fr.miage.agents.api.model.Produit;
-import modele.Prix;
+import modele.Categorie;
 import modele.Product;
 import modele.Stock;
 
@@ -65,13 +63,13 @@ public class PrixVente {
 		HashMap<Categorie,Double> map2 = new HashMap<Categorie,Double>();
 		HashMap<Categorie,Double> map3 = new HashMap<Categorie,Double>();
 		Categorie consommable= new Categorie();
-		consommable.nomCategorie="Consommable";
+		consommable.setNomCategorie("Consommable");
 		Categorie hightech= new Categorie();
-		hightech.nomCategorie="High-tech";
+		consommable.setNomCategorie("High-tech");
 		Categorie cosmetique= new Categorie();
-		cosmetique.nomCategorie="Cosmétique";
+		consommable.setNomCategorie("Cosmétique");
 		Categorie entretien = new Categorie();
-		entretien.nomCategorie="Produit entretien";
+		consommable.setNomCategorie("Produit entretien");
 		map0.put(consommable, 1.2);
 		map0.put(consommable, 1.1);
 		map0.put(consommable, 1.1);
@@ -93,7 +91,8 @@ public class PrixVente {
 		list.add(map2);
 		list.add(map3);
 		long nbJours = Stock.getDateAchat(product);
-		Categorie categorie = product.idCategorie;
+		
+		Categorie categorie = product.getCategorie();
 		
 		int coeffNbJours = (int) (nbJours % 7);
 		return list.get(coeffNbJours).get(categorie);
@@ -102,7 +101,7 @@ public class PrixVente {
 
 	public static String realCategorie(Categorie categorie, boolean autres) {
 
-		if (categorie.nomCategorie.equals("Légume") || categorie.nomCategorie.equals("Produit laitier") || categorie.nomCategorie.equals("Boisson")) {
+		if (categorie.getNomCategorie().equals("Légume") || categorie.getNomCategorie().equals("Produit laitier") || categorie.getNomCategorie().equals("Boisson")) {
 			return "Consommable";
 		}
 		else {
@@ -111,7 +110,7 @@ public class PrixVente {
 
 			}
 			else {
-				return categorie.nomCategorie;
+				return categorie.getNomCategorie();
 			}
 		}
 	}

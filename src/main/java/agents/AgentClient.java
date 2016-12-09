@@ -27,7 +27,7 @@ public class AgentClient extends CyclicBehaviour{
 				Message message = (Message)msg.getContentObject();
 				ACLMessage response= new ACLMessage(ACLMessage.INFORM);
 				switch(message.type){
-				case InitierAchat:
+				case AchatClient:
 					Achat achat = (Achat)msg.getContentObject();
 					ResultatAchat resultatAchat = new ResultatAchat();
 					response.setContentObject(resultatAchat);
@@ -38,9 +38,6 @@ public class AgentClient extends CyclicBehaviour{
 				case PrevenirSolde:
 					if (msg.getSender().getName().equals("AgentGestion")) {
 						response.setContentObject(new PrevenirSolde());
-					}
-					else {
-						//l'autre supermarché fait des soldes
 					}
 					break;
 				default:

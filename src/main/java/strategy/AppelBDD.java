@@ -11,37 +11,13 @@ import fr.miage.agents.api.message.recherche.ResultatRecherche;
 import fr.miage.agents.api.message.relationclientsupermarche.Achat;
 import fr.miage.agents.api.message.relationclientsupermarche.ResultatAchat;
 import fr.miage.agents.api.model.Produit;
-import modele.Prix;
+import modele.Buy;
 import modele.Product;
 import modele.Stock;
 import util.HibernateUtil;
 
 public class AppelBDD {
-	/*
-	public static float getPrixAchat(Product product) {
-		List<Stock> stocks = new ArrayList<Stock>();
-		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-
-		stocks= ((Session) HibernateUtil.getSessionFactory()).createQuery("from Stock where product=?")
-				.setParameter(0, product).list();
-
-		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
-		if (stocks.size() > 0) {
-			float moyenne = 0;
-			for (Stock stock : stocks) {
-				moyenne+=
-			}
-			return achats;
-		} else {
-			//check return
-			return 0;
-		}
-		return 0;
-	}
-
-	 */
-
-	//right price ?
+	
 	public static ResultatRecherche search(Rechercher recherche) {
 		ResultatRecherche rr = new ResultatRecherche();
 		rr.produitList=new ArrayList<Produit>();
@@ -49,44 +25,23 @@ public class AppelBDD {
 		if (recherche.marque!=null) {
 			List<Product> list = rechercheParMarque(recherche.marque);
 			for (Product p : list) {
-				float prix = Prix.getPrixProduit(p);
-				Produit produit = p.getCloneProduct();
-				produit.prixProduit=prix;
-				rr.produitList.add(produit);
+				rr.produitList.add(getAchat(p).getProduct());
 			}
 		}
 		//produit ref
 		if (recherche.idProduit>0) {
 			Product product = Product.getProduct(recherche.idProduit);
-			Produit p = product.getCloneProduct();
-			//p.prixProduit=PrixVente.setPrixVente(product, (float)0, new Date().getDate());
-			rr.produitList.add(p);
+			rr.produitList.add(getAchat(product).getProduct());
 		}
 
 		//list categorie
 		if (recherche.nomCategorie!=null) {
 			List<Product> list = rechercheParCategorie(recherche.nomCategorie);
 			for (Product p : list) {
-				float prix = Prix.getPrixProduit(p);
-				Produit produit = p.getCloneProduct();
-				produit.prixProduit=prix;
-				rr.produitList.add(produit);			
+				rr.produitList.add(getAchat(p).getProduct());			
 			}
 		}
 
-		//list prix
-		if (recherche.prixMin>0) {
-			//get all produits prixmin
-
-			/*
-			for (Product p : list) {
-				float prix = Prix.getPrixProduit(p);
-				Produit produit = p.getCloneProduct();
-				produit.prixProduit=prix;
-				rr.produitList.add(produit);			
-			}
-			 */
-		}
 		return rr;
 	}
 
@@ -125,29 +80,39 @@ public class AppelBDD {
 
 	public static ResultatAchat listeCourses(Achat achat) {
 		ResultatAchat resultatAchat = new ResultatAchat();
-		resultatAchat.courses = new HashMap<Integer,Integer>();
+		resultatAchat.courses = new HashMap<Produit,Integer>();
 		for (int idProduit : achat.listeCourses.keySet()) {
-			Product p = Product.getProduct(idProduit);
-			Produit produit = p.getCloneProduct();
-			produit.prixProduit=Prix.getPrixProduit(p);
-			int quantite = getQuantiteStock(p);
-			resultatAchat.courses.put(produit, quantite);
+			Buy buy = getAchat(Product.getProduct(idProduit));
+			resultatAchat.courses.put(buy.getProduct(), buy.getQuantite());
 		}
 		return resultatAchat ;
 	}
 
-	public static int getQuantiteStock(Product p) {
+	public static Buy getAchat(Product p) {
+		Buy buy = null;
+		Produit produit = p.getCloneProduct();
 		List<Stock> stocks = new ArrayList<Stock>();
+		List<Buy> achats = new ArrayList<Buy>();
 		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
 		stocks = ((Session) HibernateUtil.getSessionFactory()).createQuery("from Stock where product=?")
 				.setParameter(0, p).list();
 
 		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+
 		if (stocks.size() > 0) {
-			return stocks.get(0).getQuantite();
+			int quantite = 0;
+			ArrayList<Float> prix = new ArrayList<Float>();
+			float price=0;
+			for (Stock s : stocks) {
+				price+=s.getPrixUnitaire()*s.getQuantite();
+				quantite+=s.getQuantite();
+			}
+			produit.prixProduit=price/quantite;
+			buy = new Buy(produit,quantite);
+			return buy;
 		} else {
-			return 0;
+			return new Buy(produit,0);
 		}
 	}
 }
