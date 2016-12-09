@@ -50,21 +50,13 @@ public class Vendu {
 		this.product = product;
 	}
 	
-	public static float roundOff(float x, int position)
-    {
-        float a = x;
-        double temp = Math.pow(10.0, position);
-        a *= temp;
-        a = Math.round(a);
-        return (a / (float)temp);
-    }
 	public static void ajoutVente (int quantite, Date date, Product product, float prix){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
         Vendu v = new Vendu ();
         v.setDate(date);
-        v.setPrixUnitaire(roundOff(prix/quantite,2));
+        v.setPrixUnitaire(prix/quantite);
         v.setProduit(product);
         v.setQuantite(quantite);
         session.save(v);

@@ -16,7 +16,6 @@
   
   <!-- Mapping files -->
 		<mapping resource="Categorie.hbm.xml" />
-		<mapping resource="DemandeClient.hbm.xml" />
 		<mapping resource="Product.hbm.xml" />
 		<mapping resource="Promotion.hbm.xml" />
 		<mapping resource="Stock.hbm.xml" />

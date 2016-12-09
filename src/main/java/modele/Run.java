@@ -26,11 +26,14 @@ public class Run {
 		System.out.println(AchatProduit.getAllProduits());
 		System.out.println(AchatProduit.getListeproductsStrategiques().get(0));
 		HashMap<Product, Integer> gwtb = AchatProduit.getWhatToBuy();
+		/*
+		 * 
+		
 		for (Map.Entry<Product, Integer> entry : gwtb.entrySet()) {
 		    Product key = entry.getKey();
 		    int value = entry.getValue();
 		    System.out.println("Produit-> "+key.getNomProduct() + " Quantité: "+value + "\n");
-		}
+		} */
 		
 		//Vendu.ajoutVente(100, new Date(), Product.getProduct(1), 100);
 		//AchatProduit.majListeproductsStrategiques();
@@ -41,7 +44,10 @@ public class Run {
 		//Vendu.ajoutVente(100, new Date(), Product.getProduct(3), 100);
 		//AchatProduit.majListeproductsStrategiques();
 		
-		
+		AchatProduit.achatFournisseur(7,200 , 100);
+		AchatProduit.achatFournisseur(7,200 , 100);
+		AchatProduit.achatFournisseur(7,200 , 100);
+		AchatProduit.achatFournisseur(7,200 , 100);
 		AchatProduit.achatClient(Product.getProduct(7),200 , 100);
 		//System.out.println(AchatProduit.getWhatToBuy());
 		//session.save(user);

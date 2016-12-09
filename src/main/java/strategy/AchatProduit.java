@@ -152,7 +152,10 @@ public class AchatProduit {
 		}
 	}
 
-	public static void achatClient(Product produit, int quantite, float prix) {
+	public synchronized static void achatClient(Product produit, int quantite, float prix) {
+		//Ajout dans la table VENDU
+		Vendu.ajoutVente(quantite, new Date(), produit, prix);
+		
 		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
 		
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -167,7 +170,7 @@ public class AchatProduit {
 				.setParameter(0, produit).list();
 		for (Stock stock : stocks) {
 			if (quantite > 0) {
-				if (stock.getQuantite() >= quantite) {
+				if (stock.getQuantite() > quantite) {
 					stock.setQuantite(stock.getQuantite() - quantite);
 					quantite = 0;
 				} else {
@@ -188,16 +191,20 @@ public class AchatProduit {
 		session.getTransaction().commit();
 		session.close();
 		
-		Vendu.ajoutVente(quantite, new Date(), produit, prix);
 	}
-
-	public synchronized  static void  achatFournisseur(Long idProd, int quantite, float prix){
-
+	public synchronized static void achatFournisseur(long idProduit, int quantite, float prix) {
 		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
 		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
 		s.setCapital(s.getCapital() - prix);
 		s.setStock(s.getStock() + quantite);
-		// METTRE A JOUR LA TABLE STOCK
+		// MISE A JOUR DE LA TABLE STOCK
+		Stock stock = new Stock ();
+		stock.setProduit((Product)session.load(Product.class, idProduit));
+		stock.setDateAchat(new Date());
+		stock.setQuantite(quantite);
+		stock.setPrixUnitaire(prix/quantite);
+		session.save(stock);
 		session.update(s);
 		session.getTransaction().commit();
 		session.close();
