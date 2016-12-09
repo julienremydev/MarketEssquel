@@ -14,6 +14,7 @@ public class Vendu {
 	private int quantite;
 	private Date date;
 	private Product product;
+	private float prixUnitaire;
 	
 	public Vendu(){}
 
@@ -60,5 +61,13 @@ public class Vendu {
         session.close();
         
         return result;
+	}
+
+	public float getPrixUnitaire() {
+		return prixUnitaire;
+	}
+
+	public void setPrixUnitaire(float prixUnitaire) {
+		this.prixUnitaire = prixUnitaire;
 	}
 }

@@ -4,7 +4,6 @@ public class DemandeClient {
 
 	private int id;
 	private Product product;
-	
 	private int quantite;
 	
 	public DemandeClient (Product product, int quantite){

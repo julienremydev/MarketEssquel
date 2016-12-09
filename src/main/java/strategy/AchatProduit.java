@@ -8,9 +8,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import modele.Achat;
 import modele.Categorie;
-import modele.Prix;
 import modele.Product;
 import modele.SuperMarche;
 import modele.Vendu;
@@ -170,17 +168,17 @@ public class AchatProduit {
 	}
 	
 	//Dernier prix auquel on a vendu le product
-	private float getPrixproductVendu(Product p){
-		return Prix.getPrixProduit(p);
-	}
+	//private float getPrixproductVendu(Product p){
+		//return Prix.getPrixProduit(p);
+	//}
 	//Prix actuel du product de la concurrence
 	private void getPrixproductVenduConcurrence(){
 		//RETURN PRIX
 	}
 	//Dernier prix auquel on a acheté le product
-	private float getPrixproductAchete(Product p){
-		return Achat.getPrixProduitAchete(p).getPrix_unitaire();
-	}
+	//private float getPrixproductAchete(Product p){
+		//return Achat.getPrixProduitAchete(p).getPrix_unitaire();
+	//}
 	
 
 	public static List<Long> getListeproductsStrategiques() {

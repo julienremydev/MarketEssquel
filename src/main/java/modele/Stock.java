@@ -9,11 +9,11 @@ import fr.miage.agents.api.model.Produit;
 import util.HibernateUtil;
 
 public class Stock {
-	//@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private int quantite;
 	private Date dateAchat;
 	private Product product;
+	private float prixUnitaire;
 	
 	public Stock(){}
 
@@ -98,5 +98,13 @@ public class Stock {
         }
         session.close();
 		return s;
+	}
+
+	public float getPrixUnitaire() {
+		return prixUnitaire;
+	}
+
+	public void setPrixUnitaire(float prixUnitaire) {
+		this.prixUnitaire = prixUnitaire;
 	}
 }

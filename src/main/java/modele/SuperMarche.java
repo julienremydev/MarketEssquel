@@ -1,5 +1,6 @@
 package modele;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -14,8 +15,18 @@ public class SuperMarche {
 	private int stock;
 	private int MAX_STOCK;
 	private int nb_jours_promo_restants;
-	
-	public SuperMarche(){}
+	public final static ArrayList<EnsembleProduit> produitsPromo = new ArrayList<EnsembleProduit>();
+
+	static {
+		produitsPromo.add(new EnsembleProduit("Courgette", "Tomate"));
+		produitsPromo.add(new EnsembleProduit("Eponge", "Serpillière"));
+		produitsPromo.add(new EnsembleProduit("Four microonde", "Grille pain"));
+		produitsPromo.add(new EnsembleProduit("Montre connectée", "Smartphone"));
+		produitsPromo.add(new EnsembleProduit("Bière", "Mirabelle"));
+	}
+
+	public SuperMarche() {
+	}
 
 	public int getId() {
 		return id;
@@ -48,54 +59,54 @@ public class SuperMarche {
 	public void setStock(int stock) {
 		this.stock = stock;
 	}
-	
-	public static void ajoutSuperMarche(String nom){
+
+	public static void ajoutSuperMarche(String nom) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        
-        SuperMarche newSM = new SuperMarche();
-        newSM.setNom(nom);
-        
-        session.save(newSM);
-        session.close();
+		session.beginTransaction();
+
+		SuperMarche newSM = new SuperMarche();
+		newSM.setNom(nom);
+
+		session.save(newSM);
+		session.close();
 	}
-	
-	public static SuperMarche getSuperMarche(String nom){
+
+	public static SuperMarche getSuperMarche(String nom) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        
-        String hql = "SELECT sm FROM SuperMarche sm WHERE sm.nom=:nom";
-        Query query = session.createQuery(hql);
-        query.setParameter("nom", nom);
-        
-        SuperMarche supermarche = null;
-        
-        SuperMarche s = (SuperMarche)query.list().get(0);
-        if(!query.list().isEmpty()){
-        	supermarche = (SuperMarche)query.list().get(0);
-        }
-        
-        session.close();
-        
-        return supermarche;
+		session.beginTransaction();
+
+		String hql = "SELECT sm FROM SuperMarche sm WHERE sm.nom=:nom";
+		Query query = session.createQuery(hql);
+		query.setParameter("nom", nom);
+
+		SuperMarche supermarche = null;
+
+		SuperMarche s = (SuperMarche) query.list().get(0);
+		if (!query.list().isEmpty()) {
+			supermarche = (SuperMarche) query.list().get(0);
+		}
+
+		session.close();
+
+		return supermarche;
 	}
-	
-	public static List<SuperMarche> getSuperMarches(){
+
+	public static List<SuperMarche> getSuperMarches() {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        
-        String hql = "SELECT sm FROM SuperMarche sm WHERE";
-        Query query = session.createQuery(hql);
-        
-        List supermarches = null;
-        
-        if(!query.list().isEmpty()){
-        	supermarches = query.list();
-        }
-        
-        session.close();
-        
-        return supermarches;
+		session.beginTransaction();
+
+		String hql = "SELECT sm FROM SuperMarche sm WHERE";
+		Query query = session.createQuery(hql);
+
+		List supermarches = null;
+
+		if (!query.list().isEmpty()) {
+			supermarches = query.list();
+		}
+
+		session.close();
+
+		return supermarches;
 	}
 
 	public int getMAX_STOCK() {
@@ -116,21 +127,21 @@ public class SuperMarche {
 
 	public void promoPrevue() {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        
-        this.setNb_jours_promo_restants(this.getNb_jours_promo_restants()-2);
-        
-        session.update(this);
-        session.close();
+		session.beginTransaction();
+
+		this.setNb_jours_promo_restants(this.getNb_jours_promo_restants() - 2);
+
+		session.update(this);
+		session.close();
 	}
 
 	public void nouvelAn() {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        
-        this.setNb_jours_promo_restants(10);
-        
-        session.update(this);
-        session.close();
+		session.beginTransaction();
+
+		this.setNb_jours_promo_restants(10);
+
+		session.update(this);
+		session.close();
 	}
 }
