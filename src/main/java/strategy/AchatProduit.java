@@ -191,7 +191,8 @@ public class AchatProduit {
 		Vendu.ajoutVente(quantite, new Date(), produit, prix);
 	}
 
-	public static void achatFournisseur(Product produit, int quantite, float prix) {
+	public synchronized  static void  achatFournisseur(Long idProd, int quantite, float prix){
+
 		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		s.setCapital(s.getCapital() - prix);

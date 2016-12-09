@@ -7,16 +7,16 @@ import java.util.UUID;
 import fr.miage.agents.api.message.Message;
 import fr.miage.agents.api.message.negociation.FinaliserAchat;
 import fr.miage.agents.api.message.negociation.InitierAchat;
+import fr.miage.agents.api.message.negociation.NegocierPrix;
 import fr.miage.agents.api.message.negociation.ResultatFinalisationAchat;
 import fr.miage.agents.api.message.negociation.ResultatInitiationAchat;
-import fr.miage.agents.api.message.recherche.ResultatRecherche;
-import fr.miage.agents.api.model.Produit;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import strategy.AchatProduit;
 
 public class AgentAchat extends CyclicBehaviour{
 	private static final MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
@@ -58,12 +58,14 @@ public class AgentAchat extends CyclicBehaviour{
 					ResultatInitiationAchat resultAch = (ResultatInitiationAchat)msg.getContentObject();
 					UUID sessionCourante = resultAch.session;
 					InitierAchat infoAgentGestionResult = (InitierAchat)produitEtQuantite.get(sessionCourante);
-					
+					// Méthode pour savoir si on a asser de capital
+					// Méthode pour savoir si le prix proposer nous conviens 
+					boolean prixOk = true;
 					if (resultAch.quantiteDisponible != 0)
 					{
 						if(resultAch.quantiteDisponible == infoAgentGestionResult.quantite )
 						{
-							if (resultAch.prixFixe == 15)
+							if (prixOk)
 							{
 								ACLMessage finalisationAchat = new ACLMessage(ACLMessage.INFORM);
 								finalisationAchat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
@@ -75,13 +77,29 @@ public class AgentAchat extends CyclicBehaviour{
 								transaction.put(sessionCourante, finalisationAchat);
 								this.getAgent().send(finalisationAchat);
 							}
+							else{
+								ACLMessage negociationPrix = new ACLMessage(ACLMessage.INFORM);
+								negociationPrix.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
+								
+								NegocierPrix negoPrice = new NegocierPrix();
+								negoPrice.idProduit = (int) infoAgentGestionResult.idProduit;
+								negoPrice.session = sessionCourante;
+								negoPrice.prixDemande = (float) (resultAch.prixFixe * 0.9) ; // ici 
+								negoPrice.quantiteDemande = resultAch.quantiteDisponible;
+								
+								negociationPrix.setContentObject(negoPrice);
+								this.getAgent().send(negociationPrix);
+							}
 						}
 						else{
-							// initier nouvel Achat
+							//on modifie juste la quantité de notre initerAchat précédent et on renvoie
+							infoAgentGestionResult.quantite = resultAch.quantiteDisponible;
+							ACLMessage nouvelleInitiationDeLachat = new ACLMessage(ACLMessage.INFORM);
+							nouvelleInitiationDeLachat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
+							nouvelleInitiationDeLachat.setContentObject(nouvelleInitiationDeLachat);
+							this.getAgent().send(nouvelleInitiationDeLachat);
 						}
 					}
-						
-					
 					break;
 				case ResultatFinalisationAchat:
 					ResultatFinalisationAchat resultatFinalAchat = (ResultatFinalisationAchat)msg.getContentObject();
@@ -89,38 +107,12 @@ public class AgentAchat extends CyclicBehaviour{
 					long idprod = resultatFinalAchat.idProduit;
 					int quantitDemande = resultatFinalAchat.quantiteProduit;
 					float prixAchat = resultatFinalAchat.prixFinal;
-					// Do some shit to add BDD
-					System.out.println("achat de : " + idprod + " au nombre de : "+quantitDemande+" au prix de : "+prixAchat);
-					
+					AchatProduit.achatFournisseur(idprod,quantitDemande,prixAchat);
+					System.out.println("achat de : " + idprod + " au nombre de : "+quantitDemande+" au prix de : "+prixAchat+" est tarminé");				
+					break;
+				case ResultatNegociation:
 					
 					break;
-				
-			
-				case ResultatRecherche:
-					ResultatRecherche resultatRecherche = (ResultatRecherche) msg.getContentObject();
-					transaction.put(resultatRecherche.Session, msg);
-					if(resultatRecherche.produitList.get(0) != null){
-						Produit produit = (Produit)resultatRecherche.produitList.get(0);
-						
-						ACLMessage initAchat = new ACLMessage(ACLMessage.INFORM);
-						initAchat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
-						//on créer ensuite une recherche pour l'envoyer au fournisseur avec les infos fournies par l'agent gesiton
-						InitierAchat initAch = new InitierAchat();
-						initAch.idProduit = (int) produit.idProduit;
-						//Double d = produitTemp.get(produit.nomProduit);
-						//initAch.quantite = d.intValue();
-						
-						initAchat.setContentObject(initAch);
-						this.getAgent().send(initAchat);
-					}
-					else
-					{
-						//TODO produit pas dispo
-					}
-					
-					break;
-				
-
 				}
 			} catch (UnreadableException | IOException e) {
 				e.printStackTrace();
