@@ -2,17 +2,23 @@ package strategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.hibernate.Session;
+
 import fr.miage.agents.api.model.Produit;
+import modele.Buy;
 import modele.Categorie;
 import modele.Product;
 import modele.Stock;
+import util.HibernateUtil;
 
 public class PrixVente {
 	
 	//evaluation
 	//doubler la méthode sans la concurrence
 	//internaliser le prixAchat
-	public static float setPrixVente(Product product, float prixAchat, int date) {
+	public static float setPrixVente(Product product, float prixAchat) {
 		float prixVente = prixAchat;
 
 		//traitement priorite
@@ -164,7 +170,16 @@ public class PrixVente {
 	}
 
 	public static void updatePrice() {
-		// TODO Auto-generated method stub
+		List<Product> products = new ArrayList<Product>();
+		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
+		products = ((Session) HibernateUtil.getSessionFactory()).createQuery("from Product").list();
 		
+		for (Product p : products) {
+			Buy buy = AppelBDD.getAchat(p);
+			p.setPrixUnitaire(setPrixVente(p, buy.getPrix()));
+		}
+
+		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
 	}
 }

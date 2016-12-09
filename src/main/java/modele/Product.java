@@ -19,22 +19,11 @@ public class Product {
 	private Categorie categorie;
 
 	private String marque;
+	
+	private float prixUnitaire;
 
 	public Product(){}
 
-/*
- * 
-
-	public boolean equals( String nom) {
-		if (nom.equals(this.getNomProduct())) {
-			return true;
-		}
-		else {
-			return false;
-		}
-
-	}
- */
 	public static void ajoutproduct(long ref, String nom){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
@@ -135,6 +124,15 @@ public class Product {
 	public void setCategorie(Categorie categorie) {
 		this.categorie = categorie;
 	}
+	
+	public float getPrixUnitaire() {
+		return prixUnitaire;
+	}
+
+	public void setPrixUnitaire(float prixUnitaire) {
+		this.prixUnitaire = prixUnitaire;
+	}
+
 
 	//TODO categorie
 	public Produit getCloneProduct() {
@@ -143,7 +141,7 @@ public class Product {
 		p.marque=this.marque;
 		p.idProduit=this.idProduct;
 		p.nomProduit=this.nomProduct;
-		
+		p.prixProduit=this.prixUnitaire;
 		return p;
 	}
 }

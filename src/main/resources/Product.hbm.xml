@@ -20,5 +20,8 @@
         <property name="marque" type="java.lang.String">
             <column name="MARQUE" />
         </property>
+                <property name="prixUnitaire" type="float">
+            <column name="PRIXUNITAIRE" />
+        </property>
     </class>
 </hibernate-mapping>

@@ -14,6 +14,7 @@ import fr.miage.agents.api.model.Produit;
 import modele.Buy;
 import modele.Product;
 import modele.Stock;
+import modele.SuperMarche;
 import util.HibernateUtil;
 
 public class AppelBDD {
@@ -24,21 +25,21 @@ public class AppelBDD {
 		//produit marque
 		if (recherche.marque!=null) {
 			List<Product> list = rechercheParMarque(recherche.marque);
-			for (Product p : list) {
-				rr.produitList.add(getAchat(p).getProduct());
+			for (Product product : list) {
+				rr.produitList.add(product.getCloneProduct());
 			}
 		}
 		//produit ref
 		if (recherche.idProduit>0) {
 			Product product = Product.getProduct(recherche.idProduit);
-			rr.produitList.add(getAchat(product).getProduct());
+			rr.produitList.add(product.getCloneProduct());
 		}
 
 		//list categorie
 		if (recherche.nomCategorie!=null) {
 			List<Product> list = rechercheParCategorie(recherche.nomCategorie);
-			for (Product p : list) {
-				rr.produitList.add(getAchat(p).getProduct());			
+			for (Product product : list) {
+				rr.produitList.add(product.getCloneProduct());			
 			}
 		}
 
@@ -60,6 +61,20 @@ public class AppelBDD {
 		}
 	}
 
+	public static boolean isOkForBuying(float prix, int quantite, long idProduit) {
+		boolean ok = false;
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        SuperMarche supermarche = SuperMarche.getSuperMarche("MarketEssquel");
+        if (supermarche.getCapital()>prix*quantite) {
+        	Product product = (Product)session.load(Product.class, idProduit);
+        	if (prix > product.getPrixUnitaire()*1.2) {
+        		ok = true;
+        	}
+        }
+        session.close();
+		return ok;
+	}
 
 	public static List<Product> rechercheParCategorie(String categorie) {
 
