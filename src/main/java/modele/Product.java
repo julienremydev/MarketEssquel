@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import fr.miage.agents.api.model.Produit;
 import util.HibernateUtil;
 
 public class Product {
@@ -133,10 +134,14 @@ public class Product {
 		this.categorie = categorie;
 	}
 
-	//TODO
-	public Product getCloneProduct(float prix) {
-		Product p = new Product();
-		//p.idCategorie=this.categorie;
-		return null;
+	//TODO categorie
+	public Produit getCloneProduct() {
+		Produit p = new Produit();
+		p.descriptionProduit=this.descriptionProduct;
+		p.marque=this.marque;
+		p.idProduit=this.idProduct;
+		p.nomProduit=this.nomProduct;
+		
+		return p;
 	}
 }

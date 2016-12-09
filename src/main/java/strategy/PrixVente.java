@@ -13,7 +13,7 @@ public class PrixVente {
 	
 	//evaluation
 	//doubler la méthode sans la concurrence
-	
+	//internaliser le prixAchat
 	public static float setPrixVente(Product product, float prixAchat, int date) {
 		float prixVente = prixAchat;
 
@@ -94,6 +94,7 @@ public class PrixVente {
 		list.add(map3);
 		long nbJours = Stock.getDateAchat(product);
 		Categorie categorie = product.idCategorie;
+		
 		int coeffNbJours = (int) (nbJours % 7);
 		return list.get(coeffNbJours).get(categorie);
 

@@ -1,11 +1,13 @@
 package agents;
 
-import org.hibernate.hql.internal.ast.ErrorReporter;
+import java.io.IOException;
 
 import fr.miage.agents.api.message.Message;
 import fr.miage.agents.api.message.recherche.Rechercher;
+import fr.miage.agents.api.message.relationclientsupermarche.Achat;
+import fr.miage.agents.api.message.relationclientsupermarche.ResultatAchat;
 import fr.miage.agents.api.message.util.AppelMethodeIncorrect;
-import jade.core.AID;
+import fr.miage.agents.api.message.util.PrevenirSolde;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -23,30 +25,30 @@ public class AgentClient extends CyclicBehaviour{
 		if (msg!=null){
 			try {
 				Message message = (Message)msg.getContentObject();
-
+				ACLMessage response= new ACLMessage(ACLMessage.INFORM);
 				switch(message.type){
+				case InitierAchat:
+					Achat achat = (Achat)msg.getContentObject();
+					ResultatAchat resultatAchat = new ResultatAchat();
+					response.setContentObject(resultatAchat);
 				case Recherche:
 					Rechercher recherche = (Rechercher)msg.getContentObject();
-					
+					response.setContentObject(recherche);
 					break;
 				case PrevenirSolde:
 					if (msg.getSender().getName().equals("AgentGestion")) {
-						Message send = (Message)new AppelMethodeIncorrect();
-						ACLMessage error = new ACLMessage(ACLMessage.INFORM);
-						this.getAgent().send(error);
+						response.setContentObject(new PrevenirSolde());
 					}
 					else {
-						
+						//l'autre supermarché fait des soldes
 					}
 					break;
-
 				default:
-					Message send = (Message)new AppelMethodeIncorrect();
-					ACLMessage error = new ACLMessage(ACLMessage.INFORM);
-					this.getAgent().send(error);
+					response.setContentObject(new AppelMethodeIncorrect());
 				}
+				this.getAgent().send(response);
 			} 
-			catch (UnreadableException e) {
+			catch (UnreadableException | IOException e) {
 				e.printStackTrace();
 			}
 		}
