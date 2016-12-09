@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,16 +85,23 @@ public class AgentGestion extends TickerBehaviour{
 
 		
 		/*
-		 * 
+		 * Calcul Rabais de Noel toutes les dimanches pour la semaine d'après
 		 */
 		try {
-			String string = "09-12-"+(new Date().getYear()+1900);
-			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-			Date nouvelAn = format.parse(string);
 			Date now = new Date();
 			
-			if(nouvelAn == now){
-				HashMap<String, Double> rabaisNoel = DefinirPromotion.calculRabaisNoel();
+			String stringDebutNoel = "31-10-"+(now.getYear()+1900);
+			String stringFinNoel = "31-12-"+(now.getYear()+1900);
+			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+			Date dateDebutNoel = format.parse(stringDebutNoel);
+			Date dateFinNoel = format.parse(stringFinNoel);
+			
+			int day = dateDebutNoel.getDay();
+			if(now.after(dateDebutNoel) && now.before(dateFinNoel) && now.getDay() == day){
+				Calendar calNow = Calendar.getInstance();
+				calNow.add(Calendar.DATE, 1);
+				DefinirPromotion.calculRabaisNoel(calNow.getTime());
+				calNow.add(Calendar.DATE, -1);
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -103,12 +111,16 @@ public class AgentGestion extends TickerBehaviour{
 		 * Remise a zero nb jour promo (a chaque debut de nouvelle année)
 		 */
 		try {
-			String string = "01-01-"+(new Date().getYear()+1901);
-			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-			Date nouvelAn = format.parse(string);
-			Date now = new Date();
+			String string = "01-01-"+(new Date().getYear()+1900);
+			SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+			Date dateNouvelAn = format.parse(string);
 			
-			if(nouvelAn == now){
+			Calendar now = Calendar.getInstance();
+			Calendar nouvelAn = Calendar.getInstance();
+			now.setTime(new Date());
+			nouvelAn.setTime(dateNouvelAn);
+			
+			if(now.get(Calendar.DAY_OF_YEAR) == nouvelAn.get(Calendar.DAY_OF_YEAR)){
 				SuperMarche.getSuperMarches().get(0).nouvelAn();
 			}
 		} catch (ParseException e) {

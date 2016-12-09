@@ -82,4 +82,21 @@ public class Promotion {
         session.save(pr);
         session.close();
 	}
+	
+	
+	public static void ajoutPromo(Integer idCat, double promo, Date dateDeb, Date dateFin){
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        
+        Categorie cat = (Categorie)session.load(Categorie.class, idCat);
+        
+        Promotion pr = new Promotion();
+        pr.setPromosCategorie(cat);
+        pr.setPromo(promo);
+        pr.setDateDebut(dateDeb);
+        pr.setDateFin(dateFin);
+        
+        session.save(pr);
+        session.close();
+	}
 }

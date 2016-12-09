@@ -1,5 +1,8 @@
 package modele;
 
+import java.util.List;
+
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 import util.HibernateUtil;
@@ -37,5 +40,21 @@ public class Categorie {
         return cat;
 	}
 	
-	
+	public static List<Categorie> getCategories(){
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+
+		String hql = "SELECT ca FROM Categorie ca";
+		Query query = session.createQuery(hql);
+
+		List categories = null;
+
+		if (!query.list().isEmpty()) {
+			categories = query.list();
+		}
+
+		session.close();
+
+		return categories;
+	}
 }

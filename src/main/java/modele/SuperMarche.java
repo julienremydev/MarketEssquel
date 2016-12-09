@@ -95,7 +95,7 @@ public class SuperMarche {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 
-		String hql = "SELECT sm FROM SuperMarche sm WHERE";
+		String hql = "SELECT sm FROM SuperMarche sm";
 		Query query = session.createQuery(hql);
 
 		List supermarches = null;

@@ -1,17 +1,13 @@
 package strategy;
 
-import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
-import fr.miage.agents.api.message.negociation.InitierAchat;
-import fr.miage.agents.api.message.recherche.Rechercher;
-import jade.core.AID;
-import jade.lang.acl.ACLMessage;
-import jade.util.leap.ArrayList;
 import modele.Categorie;
 import modele.Product;
 import modele.Promotion;
@@ -142,9 +138,55 @@ public class DefinirPromotion {
 		return ratio;
 	}
 
-
-	public static HashMap<String, Double> calculRabaisNoel() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Stratégie pour le calcul des rabais de noel
+	 * Nous actualisons les rabais chaque dimanche pour la semaine suivante pendant les 2 mois de noel
+	 * On prend un random entre 0 et 30 pour chaque categories
+	 * 
+	 */
+	public static void calculRabaisNoel(Date debutSemaine) {
+		/*
+		 * Calcul de la date de fin
+		 */
+		Calendar calDeb = Calendar.getInstance();
+		calDeb.setTime(debutSemaine);
+		calDeb.add(Calendar.DATE, 6);
+		
+		Date finSemaine = calDeb.getTime();
+		
+		calDeb.add(Calendar.DATE, -6);
+		
+		
+		List<Categorie> categories = Categorie.getCategories();
+		
+		for(Categorie cat : categories){
+			Random r = new Random();
+			int promo = r.nextInt(30);
+			Promotion.ajoutPromo(cat.getIdCategorie(), promo, debutSemaine, finSemaine);
+		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
