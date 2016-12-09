@@ -5,11 +5,14 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import fr.miage.agents.api.message.Message;
+import fr.miage.agents.api.message.negociation.AnnulerAchat;
 import fr.miage.agents.api.message.negociation.FinaliserAchat;
 import fr.miage.agents.api.message.negociation.InitierAchat;
 import fr.miage.agents.api.message.negociation.NegocierPrix;
+import fr.miage.agents.api.message.negociation.ResultatAnnulationAchat;
 import fr.miage.agents.api.message.negociation.ResultatFinalisationAchat;
 import fr.miage.agents.api.message.negociation.ResultatInitiationAchat;
+import fr.miage.agents.api.message.negociation.ResultatNegociation;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -65,7 +68,7 @@ public class AgentAchat extends CyclicBehaviour{
 					{
 						if(resultAch.quantiteDisponible == infoAgentGestionResult.quantite )
 						{
-							if (prixOk)
+							if (prixOk)// envoi finalisation achat
 							{
 								ACLMessage finalisationAchat = new ACLMessage(ACLMessage.INFORM);
 								finalisationAchat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
@@ -77,7 +80,7 @@ public class AgentAchat extends CyclicBehaviour{
 								transaction.put(sessionCourante, finalisationAchat);
 								this.getAgent().send(finalisationAchat);
 							}
-							else{
+							else{ // renégociation du prix
 								ACLMessage negociationPrix = new ACLMessage(ACLMessage.INFORM);
 								negociationPrix.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
 								
@@ -91,7 +94,7 @@ public class AgentAchat extends CyclicBehaviour{
 								this.getAgent().send(negociationPrix);
 							}
 						}
-						else{
+						else{ 
 							//on modifie juste la quantité de notre initerAchat précédent et on renvoie
 							infoAgentGestionResult.quantite = resultAch.quantiteDisponible;
 							ACLMessage nouvelleInitiationDeLachat = new ACLMessage(ACLMessage.INFORM);
@@ -99,6 +102,17 @@ public class AgentAchat extends CyclicBehaviour{
 							nouvelleInitiationDeLachat.setContentObject(nouvelleInitiationDeLachat);
 							this.getAgent().send(nouvelleInitiationDeLachat);
 						}
+					}
+					else
+					{
+						ACLMessage annulerLachat = new ACLMessage(ACLMessage.INFORM);
+						annulerLachat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
+						
+						AnnulerAchat newAnnulation = new AnnulerAchat();
+						newAnnulation.session = sessionCourante;
+						
+						annulerLachat.setContentObject(newAnnulation);
+						this.getAgent().send(annulerLachat);
 					}
 					break;
 				case ResultatFinalisationAchat:
@@ -111,7 +125,39 @@ public class AgentAchat extends CyclicBehaviour{
 					System.out.println("achat de : " + idprod + " au nombre de : "+quantitDemande+" au prix de : "+prixAchat+" est tarminé");				
 					break;
 				case ResultatNegociation:
-					
+					ResultatNegociation resultatNegociation = (ResultatNegociation)msg.getContentObject();
+					UUID sessionCouranteResultNego = resultatNegociation.session;
+					InitierAchat infoAgentGestionNego = (InitierAchat)produitEtQuantite.get(sessionCouranteResultNego);
+					boolean prixNegoOk = true; // méthode à julien
+					if(prixNegoOk)// on finalise l'achat car le prix renvoyer lors de la négociation nous conviens
+					{
+						ACLMessage finalisationAchat = new ACLMessage(ACLMessage.INFORM);
+						finalisationAchat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
+						
+						FinaliserAchat contenuFinalAchat = new FinaliserAchat();
+						contenuFinalAchat.session=sessionCouranteResultNego;
+						
+						finalisationAchat.setContentObject(contenuFinalAchat);
+						transaction.put(sessionCouranteResultNego, finalisationAchat);
+						this.getAgent().send(finalisationAchat);
+					}
+					else // le prix renvoyer lors après la négociation ne nous conviens toujours pas, on annule l'achat
+					{
+						ACLMessage annulerLachat = new ACLMessage(ACLMessage.INFORM);
+						annulerLachat.addReceiver(new AID("DuNomDeLeurAgent", AID.ISLOCALNAME));
+						
+						AnnulerAchat newAnnulation = new AnnulerAchat();
+						newAnnulation.session = sessionCouranteResultNego;
+						
+						annulerLachat.setContentObject(newAnnulation);
+						this.getAgent().send(annulerLachat);
+					}
+					break;
+				case ResultatAnnulationAchat: // On enleve l'uuid correspondant à la transaction de nos hashmap
+					ResultatAnnulationAchat resultatAnnulationAchat = (ResultatAnnulationAchat)msg.getContentObject();
+					UUID keyRemoval = resultatAnnulationAchat.session;
+					transaction.remove(keyRemoval);
+					produitEtQuantite.remove(keyRemoval);
 					break;
 				}
 			} catch (UnreadableException | IOException e) {
