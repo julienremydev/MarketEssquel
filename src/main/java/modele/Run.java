@@ -31,6 +31,18 @@ public class Run {
 		    int value = entry.getValue();
 		    System.out.println("Produit-> "+key.getNomProduct() + " Quantité: "+value + "\n");
 		}
+		
+		//Vendu.ajoutVente(100, new Date(), Product.getProduct(1), 100);
+		//AchatProduit.majListeproductsStrategiques();
+		
+		//Vendu.ajoutVente(100, new Date(), Product.getProduct(2), 100);
+		//AchatProduit.majListeproductsStrategiques();
+		
+		//Vendu.ajoutVente(100, new Date(), Product.getProduct(3), 100);
+		//AchatProduit.majListeproductsStrategiques();
+		
+		
+		AchatProduit.achatClient(Product.getProduct(7),200 , 100);
 		//System.out.println(AchatProduit.getWhatToBuy());
 		//session.save(user);
 		//session.getTransaction().commit();
