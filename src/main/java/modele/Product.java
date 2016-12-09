@@ -22,6 +22,8 @@ public class Product {
 
 	public Product(){}
 
+/*
+ * 
 
 	public boolean equals( String nom) {
 		if (nom.equals(this.getNomProduct())) {
@@ -32,7 +34,7 @@ public class Product {
 		}
 
 	}
-
+ */
 	public static void ajoutproduct(long ref, String nom){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();

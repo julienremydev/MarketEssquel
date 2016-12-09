@@ -70,6 +70,7 @@ public class SuperMarche {
         
         SuperMarche supermarche = null;
         
+        SuperMarche s = (SuperMarche)query.list().get(0);
         if(!query.list().isEmpty()){
         	supermarche = (SuperMarche)query.list().get(0);
         }

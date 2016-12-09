@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
+
 import modele.Achat;
+import modele.Categorie;
 import modele.Prix;
 import modele.Product;
 import modele.SuperMarche;
@@ -42,41 +45,42 @@ import util.HibernateUtil;
  *
  */
 public class AchatProduit {
-	private SuperMarche s;
-	List<Product> listeproductsStrategiques;
+	
+	//Ajouter tous les products High-Tech et tous les autres products prioritaires
+	//Liste de 5 produits
+	private static List<Long> listeproductsStrategiques = Arrays.asList(Product.getProduct(24).getIdProduct(),Product.getProduct(25).getIdProduct(),Product.getProduct(26).getIdProduct(),Product.getProduct(27).getIdProduct());
+	
+
+	
 	//private ArrayList<product> listeproductsStrategiques = new ArrayList<product>  ();
-	private int seuil_products_ht = 20;
-	private int seuil_products_prioritaires = 30;
-	private int seuil_products_min = 5;
+	private static int seuil_products_ht = 10;
+	private static int seuil_products_prioritaires = 33;
+	private static int seuil_products_min = 5;
 	
 	//Mise à jour des products prioritaires
 	public void majListeproductsStrategiques (){
+		//METTRE DaNS LA LISTE LEs 5 produits les + vendus !!!
 		//Parcourir tous les products et vérifier si ils se sont correctement vendus récemment
 		//Sinon les virer de la liste
 		
 	}
 	public AchatProduit(){}
-	public AchatProduit ( SuperMarche s ){
-		this.setS(s);
-		//Ajouter tous les products High-Tech et tous les autres products 
-		listeproductsStrategiques = Arrays.asList(Product.getProduct(24),Product.getProduct(25),Product.getProduct(26),Product.getProduct(27));
-		
-	}
 
-	public int getNombreproductsDansStock(Product product) {
+	public static int getNombreproductsDansStock(Product product) {
 		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 		
 		String hql = "SELECT count(*) FROM Stock s WHERE s.product=:product";
         Query query =  HibernateUtil.getSessionFactory().getCurrentSession().createQuery(hql);
         query.setParameter("product", product);
 		
+        int result = ((Long) query.list().get(0)).intValue();
 		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
          
-        return (int) query.list().get(0);
+        return result;
         
 	}
 	@SuppressWarnings("unchecked")
-	public List getAllProduits() {
+	public static List<Product> getAllProduits() {
 	List<Product> product = new ArrayList<Product>();
 	HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 	
@@ -90,9 +94,32 @@ public class AchatProduit {
 	}
 }
 	
+	public synchronized  static void  achatClient(Product produit, int quantite, float prix){
+		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		s.setCapital(s.getCapital()+prix);
+		s.setStock(s.getStock()-quantite);
+		//METTRE A JOUR LA TABLE STOCK
+		session.update(s);
+		session.getTransaction().commit();
+		session.close();
+	}
+	public synchronized  static void  achatFournisseur(Product produit, int quantite, float prix){
+		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		s.setCapital(s.getCapital()-prix);
+		s.setStock(s.getStock()+quantite);
+		//METTRE A JOUR LA TABLE STOCK
+		session.update(s);
+		session.getTransaction().commit();
+		session.close();
+	}
 	//Méthode appelée à intervalle de temps régulier
 	// return une HASHMAP : clé=ref product, valeur=quantité demandée
 	public static HashMap<Product, Integer> getWhatToBuy(){
+		//Session session = HibernateUtil.getSessionFactory().openSession();
+		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
+		
 		//PRENDRE EN COMPTE LES DEMANDES CLIENTS -> appel méthode de maj liste
 		HashMap<Product, Integer> hash = new HashMap<Product, Integer> ();
 		List<Product> lp = getAllProduits();
@@ -100,14 +127,15 @@ public class AchatProduit {
 		int nb_prod_voulus = 0;
 		//mettre a jour les stocks -> parcourir tous les products
 		for (Product p : lp){
+			//Categorie cat = (Categorie)session.load(Categorie.class, p.getCategorie());
 			int nb_products_dans_stock = getNombreproductsDansStock(p);
-			if(p.getCategorie().equals("High-tech") && nb_products_dans_stock < seuil_products_ht){
+			if(p.getCategorie().getNomCategorie().equals("High-Tech") && nb_products_dans_stock < seuil_products_ht){
 				//On vérifie si le nombre total de products qu'on souhaite commander ne va pas engendrer le dépassement des stocks
 				if (seuil_products_ht - nb_products_dans_stock + s.getStock() + nb_prod_voulus <= s.getMAX_STOCK() ){
 					nb_prod_voulus+=seuil_products_ht - nb_products_dans_stock;
 					hash.put(p, seuil_products_ht - nb_products_dans_stock);
 				}	
-			}else if (listeproductsStrategiques.contains(p) && nb_products_dans_stock < seuil_products_prioritaires){
+			}else if (listeproductsStrategiques.contains(p.getIdProduct()) && nb_products_dans_stock < seuil_products_prioritaires){
 				if (seuil_products_prioritaires - nb_products_dans_stock + s.getStock() + nb_prod_voulus <= s.getMAX_STOCK() ){
 					nb_prod_voulus+=seuil_products_prioritaires - nb_products_dans_stock;
 					hash.put(p, seuil_products_prioritaires - nb_products_dans_stock);
@@ -154,44 +182,36 @@ public class AchatProduit {
 		return Achat.getPrixProduitAchete(p).getPrix_unitaire();
 	}
 	
-	
 
-	public SuperMarche getS() {
-		return s;
-	}
-	public void setS(SuperMarche s) {
-		this.s = s;
-	}
-
-	public List<Product> getListeproductsStrategiques() {
+	public static List<Long> getListeproductsStrategiques() {
 		return listeproductsStrategiques;
 	}
 
-	public void setListeproductsStrategiques(ArrayList<Product> listeproductsStrategiques) {
-		this.listeproductsStrategiques = listeproductsStrategiques;
+	public void setListeproductsStrategiques(List<Long> listeproductsStrategiques) {
+		AchatProduit.listeproductsStrategiques = listeproductsStrategiques;
 	}
 
-	public int getSeuil_products_ht() {
+	public static int getSeuil_products_ht() {
 		return seuil_products_ht;
 	}
 
 	public void setSeuil_products_ht(int seuil_product_ht) {
-		this.seuil_products_ht = seuil_product_ht;
+		AchatProduit.seuil_products_ht = seuil_product_ht;
 	}
 
-	public int getSeuil_product_prioritaires() {
+	public static int getSeuil_product_prioritaires() {
 		return seuil_products_prioritaires;
 	}
 
 	public void setSeuil_product_prioritaires(int seuil_product_prioritaires) {
-		this.seuil_products_prioritaires = seuil_product_prioritaires;
+		AchatProduit.seuil_products_prioritaires = seuil_product_prioritaires;
 	}
 
-	public int getSeuil_product_min() {
+	public static int getSeuil_product_min() {
 		return seuil_products_min;
 	}
 
 	public void setSeuil_product_min(int seuil_product_min) {
-		this.seuil_products_min = seuil_product_min;
+		AchatProduit.seuil_products_min = seuil_product_min;
 	}
 }
