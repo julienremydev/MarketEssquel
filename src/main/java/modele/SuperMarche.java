@@ -87,7 +87,7 @@ public class SuperMarche {
 		}
 
 		session.close();
-
+		
 		return supermarche;
 	}
 

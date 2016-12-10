@@ -13,7 +13,11 @@ import fr.miage.agents.api.message.negociation.NegocierPrix;
 import fr.miage.agents.api.message.negociation.ResultatAnnulationAchat;
 import fr.miage.agents.api.message.negociation.ResultatFinalisationAchat;
 import fr.miage.agents.api.message.negociation.ResultatInitiationAchat;
+<<<<<<< 4a6355dd0c392aeb3fb321607218abc18c25216a
 import fr.miage.agents.api.message.negociation.ResultatNegociation;
+=======
+import jade.core.AID;
+>>>>>>> ca marche on insere en bdd
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -34,10 +38,11 @@ public class AgentK extends CyclicBehaviour{
 			try {
 				Message message = (Message)msg.getContentObject();
 				ACLMessage response= new ACLMessage(ACLMessage.INFORM);
+				response.addReceiver(new AID("receiver", AID.ISLOCALNAME));
 				switch(message.type){
 				case InitierAchat:
 					InitierAchat ia = (InitierAchat)message;
-					
+					System.out.println("mocker est rentré dans initier Achat");
 					messages.put(ia.session, new ArrayList<Message>());
 					messages.get(ia.session).add(ia);
 					System.out.println("Entrez prix : ");
@@ -76,11 +81,16 @@ public class AgentK extends CyclicBehaviour{
 					rn.quantiteDisponible=ria2.quantiteDisponible;
 					response.setContentObject(rn);
 				case FinaliserAchat:
+
+					System.out.println("mocker est rentré dans finaliser Achat");
 					FinaliserAchat fa = (FinaliserAchat) message;
+
 					System.out.println("Entrez boolean success (1 = true, 0 = false: ");
 					
 					InitierAchat ia3 = (InitierAchat) messages.get(fa.session).get(0);
-					ResultatInitiationAchat ria3 = (ResultatInitiationAchat) messages.get(fa.session).get(0);
+					ResultatInitiationAchat ria3 = (ResultatInitiationAchat) messages.get(fa.session).get(1);
+
+					
 					ResultatFinalisationAchat rfa = new ResultatFinalisationAchat();
 					rfa.session=fa.session;
 					rfa.idProduit=ia3.idProduit;
@@ -96,6 +106,7 @@ public class AgentK extends CyclicBehaviour{
 				default: 
 					System.out.println("Problème");
 				}
+				System.out.println(response.getContentObject());
 				this.getAgent().send(response);
 			}
 			catch(Exception e)

@@ -63,9 +63,9 @@ public class AppelBDD {
 
 	public static boolean isOkForBuying(float prix, int quantite, long idProduit) {
 		boolean ok = false;
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
         SuperMarche supermarche = SuperMarche.getSuperMarche("MarketEssquel");
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
         if (supermarche.getCapital()>prix*quantite) {
         	Product product = (Product)session.load(Product.class, idProduit);
         	if (prix > product.getPrixUnitaire()*1.2) {
@@ -80,17 +80,19 @@ public class AppelBDD {
 
 
 		List<Product> products = new ArrayList<Product>();
-		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-
-		products = ((Session) HibernateUtil.getSessionFactory()).createQuery("from Product natural join Categorie where nomCategorie=?")
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		products = session.createQuery("from Product natural join Categorie where nomCategorie=?")
 				.setParameter(0, categorie).list();
 
-		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+		session.getTransaction().commit();
+		session.close();
 		if (products.size() > 0) {
 			return products;
 		} else {
 			return null;
 		}
+		
 	}
 
 	public static ResultatAchat listeCourses(Achat achat) {
