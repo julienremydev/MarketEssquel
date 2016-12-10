@@ -125,6 +125,8 @@ public class AgentAchat extends CyclicBehaviour{
 					int quantitDemande = resultatFinalAchat.quantiteProduit;
 					float prixAchat = resultatFinalAchat.prixFinal;
 					AchatProduit.achatFournisseur(idprod,quantitDemande,prixAchat);
+					transaction.remove(sessionCouranteFinalAchat);
+					produitEtQuantite.remove(sessionCouranteFinalAchat);
 					System.out.println("achat de : " + idprod + " au nombre de : "+quantitDemande+" au prix de : "+prixAchat+" est tarminé");				
 					break;
 				case ResultatNegociation:
