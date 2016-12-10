@@ -1,7 +1,6 @@
 package strategy;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import modele.Buy;
 import modele.Product;
 import modele.Stock;
 import modele.SuperMarche;
-import modele.Vendu;
 import util.HibernateUtil;
 
 public class AppelBDD {
@@ -94,21 +92,20 @@ public class AppelBDD {
 		} else {
 			return null;
 		}
-
 	}
 
 	public static ResultatAchat listeCourses(Achat achat) {
 		ResultatAchat resultatAchat = new ResultatAchat();
 		resultatAchat.courses = new HashMap<Produit,Integer>();
-		for (int idProduit : achat.listeCourses.keySet()) {
+		for (long idProduit : achat.listeCourses.keySet()) {
 			Product prod = Product.getProduct(idProduit);
-			Buy buy = getAchat(prod);
-			if (buy.getQuantite()>0) {
-				Vendu.ajoutVente(buy.getQuantite(),new Date(),prod, buy.getPrix());
+			int quantite = AchatProduit.getNombreproductsDansStock(prod);
+			if (quantite>0) {
+				AchatProduit.achatClient(prod, achat.listeCourses.get(idProduit), prod.getPrixUnitaire());
+				resultatAchat.courses.put(prod.getCloneProduct(), quantite-(achat.listeCourses.get(idProduit)));
 			}
-			resultatAchat.courses.put(buy.getProduct(), buy.getQuantite());
 		}
-
+		
 		return resultatAchat ;
 	}
 
