@@ -38,7 +38,10 @@ public class PrixVente {
 		while (prixConccurence>prixVente*1.2) {
 			prixVente*=0.98;
 		}
+		System.out.println("prixVente first " + prixVente);
+		System.out.println("prixVente first2 " + prixVente*(float)0.1);
 		prixVente=prixVente*(float) getCoeffDate(product);
+		System.out.println("prixVente : "  +prixVente);
 		return prixVente;
 	} 
 
@@ -63,46 +66,46 @@ public class PrixVente {
 	}
 
 	public static double getCoeffDate(Product product) {
-		ArrayList<HashMap<Categorie,Double>> list = new ArrayList<HashMap<Categorie,Double>>();
-		HashMap<Categorie,Double> map0 = new HashMap<Categorie,Double>();
-		HashMap<Categorie,Double> map1 = new HashMap<Categorie,Double>();
-		HashMap<Categorie,Double> map2 = new HashMap<Categorie,Double>();
-		HashMap<Categorie,Double> map3 = new HashMap<Categorie,Double>();
-		Categorie consommable= new Categorie();
-		consommable.setNomCategorie("Consommable");
-		Categorie hightech= new Categorie();
-		consommable.setNomCategorie("High-tech");
-		Categorie cosmetique= new Categorie();
-		consommable.setNomCategorie("Cosmétique");
-		Categorie entretien = new Categorie();
-		consommable.setNomCategorie("Produit entretien");
-		map0.put(consommable, 1.2);
-		map0.put(consommable, 1.1);
-		map0.put(consommable, 1.1);
-		map0.put(consommable, -1.0);
-		map1.put(hightech, 1.4);
-		map1.put(hightech, 1.3);
-		map1.put(hightech, 1.2);
-		map1.put(hightech, 1.1);
-		map2.put(cosmetique, 1.15);
-		map2.put(cosmetique, 1.05);
-		map2.put(cosmetique, 1.02);
-		map2.put(cosmetique, 1.01);
-		map3.put(entretien, 1.15);
-		map3.put(entretien, 1.045);
-		map3.put(entretien, 1.025);
-		map3.put(entretien, -1.015);
+		ArrayList<HashMap<String,Double>> list = new ArrayList<HashMap<String,Double>>();
+		HashMap<String,Double> map0 = new HashMap<String,Double>();
+		HashMap<String,Double> map1 = new HashMap<String,Double>();
+		HashMap<String,Double> map2 = new HashMap<String,Double>();
+		HashMap<String,Double> map3 = new HashMap<String,Double>();
+		
+		map0.put("Consommable", 1.2);
+		map0.put("High-tech", 1.4);
+		map0.put("Cosmétique", 1.15);
+		map0.put("Produit entretien", 1.15);
+		
+		map1.put("Consommable", 1.1);
+		map1.put("High-tech", 1.3);
+		map1.put("Cosmétique", 1.05);
+		map1.put("Produit entretien", 1.045);
+		
+		map2.put("Consommable", 1.0);
+		map2.put("High-tech", 1.2);
+		map2.put("Cosmétique", 1.02);
+		map2.put("Produit entretien", 1.025);
+		
+		map3.put("Consommable", 0.9);
+		map3.put("High-tech", 1.1);
+		map3.put("Cosmétique", 1.01);
+		map3.put("Produit entretien", 1.015);
+		
 		list.add(map0);
 		list.add(map1);
 		list.add(map2);
 		list.add(map3);
 		long nbJours = Stock.getDateAchat(product);
-		
+		System.out.println("nb jours : "+nbJours);
 		Categorie categorie = product.getCategorie();
 		
 		int coeffNbJours = (int) (nbJours % 7);
-		return list.get(coeffNbJours).get(categorie);
-
+		System.out.println("coeff"+coeffNbJours);
+		System.out.println("realcategorie" + realCategorie(categorie, false));
+		System.out.println("list : "+list.get(coeffNbJours).get(realCategorie(categorie,false)));
+		System.out.println("list2 : "+list.get(coeffNbJours));
+		return list.get(coeffNbJours).get(realCategorie(categorie,false));
 	}
 
 	public static String realCategorie(Categorie categorie, boolean autres) {
@@ -171,15 +174,21 @@ public class PrixVente {
 
 	public static void updatePrice() {
 		List<Product> products = new ArrayList<Product>();
-		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
 
-		products = ((Session) HibernateUtil.getSessionFactory().getCurrentSession()).createQuery("from Product").list();
-		
+		products = session.createQuery("SELECT s.product FROM Stock s").list();
+		session.close();
 		for (Product p : products) {
 			Buy buy = AppelBDD.getAchat(p);
-			p.setPrixUnitaire(setPrixVente(p, buy.getPrix()));
+			p.setPrixUnitaire(setPrixVente(p, buy.getProduct().prixProduit));
+			System.out.println(p);
+			HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+			HibernateUtil.getSessionFactory().getCurrentSession().update(p);
+			HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+			HibernateUtil.getSessionFactory().getCurrentSession().close();
 		}
+	
 
-		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
 	}
 }

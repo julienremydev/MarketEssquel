@@ -56,7 +56,7 @@ public class Vendu {
         
         Vendu v = new Vendu ();
         v.setDate(date);
-        v.setPrixUnitaire(prix/quantite);
+        v.setPrixUnitaire(prix);
         v.setProduit(product);
         v.setQuantite(quantite);
         session.save(v);

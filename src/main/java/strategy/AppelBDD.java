@@ -62,14 +62,14 @@ public class AppelBDD {
 	}
 
 	public static boolean isOkForBuying(float prix, int quantite, long idProduit) {
-		boolean ok = false;
+		boolean ok = true;
         SuperMarche supermarche = SuperMarche.getSuperMarche("MarketEssquel");
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         if (supermarche.getCapital()>prix*quantite) {
         	Product product = (Product)session.load(Product.class, idProduit);
-        	if (prix > product.getPrixUnitaire()*1.2) {
-        		ok = true;
+        	if (prix > product.getPrixUnitaire()*1.2 && (product.getPrixUnitaire()) !=0) {
+        		ok = false;
         	}
         }
         session.close();
@@ -110,12 +110,12 @@ public class AppelBDD {
 		Produit produit = p.getCloneProduct();
 		List<Stock> stocks = new ArrayList<Stock>();
 		List<Buy> achats = new ArrayList<Buy>();
-		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		stocks = session.createQuery("from Stock where product=?").setParameter(0, p).list();
 
-		stocks = ((Session) HibernateUtil.getSessionFactory()).createQuery("from Stock where product=?")
-				.setParameter(0, p).list();
-
-		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+		session.getTransaction().commit();
+		
 
 		if (stocks.size() > 0) {
 			int quantite = 0;

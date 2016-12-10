@@ -64,6 +64,7 @@ public class AgentK extends CyclicBehaviour{
 					NegocierPrix np = (NegocierPrix) message;
 					InitierAchat ia2 = (InitierAchat) messages.get(np.session).get(0);
 					ResultatInitiationAchat ria2 = (ResultatInitiationAchat) messages.get(np.session).get(1);
+					System.out.println("tapez 1 : pour fauve oto");
 					int isOk2= sc.nextInt();
 					boolean success2 = false;
 					if (isOk2==1) {
@@ -77,6 +78,7 @@ public class AgentK extends CyclicBehaviour{
 					rn.prixNegocie=sc.nextFloat();
 					rn.quantiteDisponible=ria2.quantiteDisponible;
 					response.setContentObject(rn);
+					break;
 				case FinaliserAchat:
 
 					System.out.println("mocker est rentré dans finaliser Achat");
@@ -100,6 +102,7 @@ public class AgentK extends CyclicBehaviour{
 					ResultatAnnulationAchat raa = new ResultatAnnulationAchat();
 					raa.session=aa.session;
 					response.setContentObject(raa);
+					break;
 				default: 
 					System.out.println("Problème");
 				}

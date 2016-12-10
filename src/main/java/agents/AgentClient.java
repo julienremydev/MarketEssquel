@@ -8,10 +8,12 @@ import fr.miage.agents.api.message.relationclientsupermarche.Achat;
 import fr.miage.agents.api.message.relationclientsupermarche.ResultatAchat;
 import fr.miage.agents.api.message.util.AppelMethodeIncorrect;
 import fr.miage.agents.api.message.util.PrevenirSolde;
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+import strategy.AppelBDD;
 
 public class AgentClient extends CyclicBehaviour{
 
@@ -26,11 +28,13 @@ public class AgentClient extends CyclicBehaviour{
 			try {
 				Message message = (Message)msg.getContentObject();
 				ACLMessage response= new ACLMessage(ACLMessage.INFORM);
+				response.addReceiver(new AID("mocker", AID.ISLOCALNAME));
 				switch(message.type){
 				case AchatClient:
 					Achat achat = (Achat)msg.getContentObject();
-					ResultatAchat resultatAchat = new ResultatAchat();
+					ResultatAchat resultatAchat = AppelBDD.listeCourses(achat);
 					response.setContentObject(resultatAchat);
+					break;
 				case Recherche:
 					Rechercher recherche = (Rechercher)msg.getContentObject();
 					response.setContentObject(recherche);

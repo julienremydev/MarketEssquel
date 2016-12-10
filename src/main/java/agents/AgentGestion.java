@@ -8,17 +8,18 @@ import java.util.Map;
 import fr.miage.agents.api.message.negociation.InitierAchat;
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import modele.Product;
+import strategy.PrixVente;
 
-public class AgentGestion extends OneShotBehaviour{
+public class AgentGestion extends TickerBehaviour{
 
 	public AgentGestion(Agent a){
-		super(a);
+		super(a,30000);
 	}
 
-	public void action() {
+	public void onTick() {
 		/*
 		 * Gestion des Stocks
 		 */
@@ -49,6 +50,7 @@ public class AgentGestion extends OneShotBehaviour{
 			}
 		}
 
+		PrixVente.updatePrice();
 		
 
 		block();

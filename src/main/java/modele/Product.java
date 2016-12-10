@@ -144,4 +144,12 @@ public class Product {
 		p.prixProduit=this.prixUnitaire;
 		return p;
 	}
+
+	@Override
+	public String toString() {
+		return "Product [idProduct=" + idProduct + ", nomProduct=" + nomProduct + ", categorie=" + categorie
+				+ ", marque=" + marque + ", prixUnitaire=" + prixUnitaire + "]";
+	}
+	
+	
 }

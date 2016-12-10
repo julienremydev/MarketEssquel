@@ -1,5 +1,6 @@
 package agents;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.UUID;
@@ -7,6 +8,9 @@ import java.util.UUID;
 import fr.miage.agents.api.message.Message;
 import fr.miage.agents.api.message.negociation.InitierAchat;
 import fr.miage.agents.api.message.relationclientsupermarche.Achat;
+import fr.miage.agents.api.message.relationclientsupermarche.ResultatAchat;
+import fr.miage.agents.api.model.Produit;
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -34,19 +38,31 @@ public class AgentJ extends CyclicBehaviour{
 		again=sc.nextInt();
 		}
 		ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+		message.addReceiver(new AID("receiver", AID.ISLOCALNAME));
 		Achat achat = new Achat();
 		achat.listeCourses=map;
-		message.setContentObject(achat);
+		try {
+			message.setContentObject(achat);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		this.getAgent().send(message);
+		System.out.println("message Achat est envoyé");
 		block();
 		ACLMessage msg= this.getAgent().blockingReceive(mt);
 		if (msg!=null){
 			try {
-				Message msg = (Message)msg.getContentObject();
+				Message msg2 = (Message)msg.getContentObject();
 
-				switch(message.type){
-				case InitierAchat:
-					// do your shit man
+				switch(msg2.type){
+				case ResultatAchatClient:
+					
+					ResultatAchat res = new ResultatAchat();
+					for (Produit prod : res.courses.keySet())
+					{
+						System.out.println(" Prix "+prod.prixProduit+" quantitté : "+res.courses.get(prod));
+					}
 					break;
 					
 				}

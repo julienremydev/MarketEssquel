@@ -22,8 +22,8 @@ public class Mocker extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        addBehaviour(new AgentK(this));
-        //addBehaviour (new AgentJ(this));
+        //addBehaviour(new AgentK(this));
+        addBehaviour (new AgentJ(this));
     }
 }
 

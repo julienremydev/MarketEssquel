@@ -203,7 +203,7 @@ public class AchatProduit {
 		stock.setProduit((Product)session.load(Product.class, idProduit));
 		stock.setDateAchat(new Date());
 		stock.setQuantite(quantite);
-		stock.setPrixUnitaire(prix/quantite);
+		stock.setPrixUnitaire(prix);
 		session.save(stock);
 		session.update(s);
 		session.getTransaction().commit();

@@ -57,7 +57,7 @@ public class AgentAchat extends CyclicBehaviour{
 					initiationDeLachat.setContentObject(contenuInitAchat);
 					
 					transaction.put(notreUuid, initiationDeLachat);
-					produitEtQuantite.put(notreUuid, infoAgentGestion);
+					produitEtQuantite.put(notreUuid, contenuInitAchat);
 					this.getAgent().send(initiationDeLachat);
 					
 					break;
@@ -65,8 +65,8 @@ public class AgentAchat extends CyclicBehaviour{
 					ResultatInitiationAchat resultAch = (ResultatInitiationAchat)msg.getContentObject();
 					UUID sessionCourante = resultAch.session;
 					InitierAchat infoAgentGestionResult = (InitierAchat)produitEtQuantite.get(sessionCourante);
-					// Méthode pour savoir si on a asser de capital
-					// Méthode pour savoir si le prix proposer nous conviens 
+					
+					System.out.println("prix fixé : " + infoAgentGestionResult);
 					boolean prixOk = AppelBDD.isOkForBuying(resultAch.prixFixe, resultAch.quantiteDisponible, infoAgentGestionResult.idProduit);
 					System.out.println("isok for buying : "+prixOk);
 					if (resultAch.quantiteDisponible != 0)
@@ -104,7 +104,8 @@ public class AgentAchat extends CyclicBehaviour{
 							infoAgentGestionResult.quantite = resultAch.quantiteDisponible;
 							ACLMessage nouvelleInitiationDeLachat = new ACLMessage(ACLMessage.INFORM);
 							nouvelleInitiationDeLachat.addReceiver(new AID("mocker", AID.ISLOCALNAME));
-							nouvelleInitiationDeLachat.setContentObject(nouvelleInitiationDeLachat);
+							infoAgentGestionResult.quantite = resultAch.quantiteDisponible;
+							nouvelleInitiationDeLachat.setContentObject(infoAgentGestionResult);
 							this.getAgent().send(nouvelleInitiationDeLachat);
 						}
 					}
@@ -135,7 +136,7 @@ public class AgentAchat extends CyclicBehaviour{
 					ResultatNegociation resultatNegociation = (ResultatNegociation)msg.getContentObject();
 					UUID sessionCouranteResultNego = resultatNegociation.session;
 					InitierAchat infoAgentGestionNego = (InitierAchat)produitEtQuantite.get(sessionCouranteResultNego);
-					boolean prixNegoOk = true; // méthode à julien
+					boolean prixNegoOk = resultatNegociation.estAccepte; // méthode à julien
 					if(prixNegoOk)// on finalise l'achat car le prix renvoyer lors de la négociation nous conviens
 					{
 						ACLMessage finalisationAchat = new ACLMessage(ACLMessage.INFORM);
