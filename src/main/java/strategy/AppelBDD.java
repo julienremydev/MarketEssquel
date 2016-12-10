@@ -129,7 +129,7 @@ public class AppelBDD {
 			ArrayList<Float> prix = new ArrayList<Float>();
 			float price=0;
 			for (Stock s : stocks) {
-				price+=s.getPrixUnitaire()*s.getQuantite();
+				price+=s.getProduit().getPrixUnitaire()*s.getQuantite();
 				quantite+=s.getQuantite();
 			}
 			produit.prixProduit=price/quantite;
