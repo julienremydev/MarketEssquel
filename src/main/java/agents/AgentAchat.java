@@ -20,6 +20,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import strategy.AchatProduit;
+import strategy.AppelBDD;
 
 public class AgentAchat extends CyclicBehaviour{
 	private static final MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
@@ -65,7 +66,7 @@ public class AgentAchat extends CyclicBehaviour{
 					InitierAchat infoAgentGestionResult = (InitierAchat)produitEtQuantite.get(sessionCourante);
 					// Méthode pour savoir si on a asser de capital
 					// Méthode pour savoir si le prix proposer nous conviens 
-					boolean prixOk = true;
+					boolean prixOk = AppelBDD.isOkForBuying(resultAch.prixFixe, resultAch.quantiteDisponible, infoAgentGestionResult.idProduit);
 					if (resultAch.quantiteDisponible != 0)
 					{
 						if(resultAch.quantiteDisponible == infoAgentGestionResult.quantite )

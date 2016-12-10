@@ -11,7 +11,9 @@ public class Mocker extends Agent
 
     protected void setup() 
     {
+    	// on choisis le truc à tester : client (AgentJ) ou fournisseur (AgentK)
         addBehaviour(new AgentK(this));
+        //addBehaviour (new AgentJ(this));
     }
 }
 
