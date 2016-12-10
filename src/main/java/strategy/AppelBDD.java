@@ -1,6 +1,7 @@
 package strategy;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,10 +16,11 @@ import modele.Buy;
 import modele.Product;
 import modele.Stock;
 import modele.SuperMarche;
+import modele.Vendu;
 import util.HibernateUtil;
 
 public class AppelBDD {
-	
+
 	public static ResultatRecherche search(Rechercher recherche) {
 		ResultatRecherche rr = new ResultatRecherche();
 		rr.produitList=new ArrayList<Produit>();
@@ -63,16 +65,16 @@ public class AppelBDD {
 
 	public static boolean isOkForBuying(float prix, int quantite, long idProduit) {
 		boolean ok = true;
-        SuperMarche supermarche = SuperMarche.getSuperMarche("MarketEssquel");
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        if (supermarche.getCapital()>prix*quantite) {
-        	Product product = (Product)session.load(Product.class, idProduit);
-        	if (prix > product.getPrixUnitaire()*1.2 && (product.getPrixUnitaire()) !=0) {
-        		ok = false;
-        	}
-        }
-        session.close();
+		SuperMarche supermarche = SuperMarche.getSuperMarche("MarketEssquel");
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		if (supermarche.getCapital()>prix*quantite) {
+			Product product = (Product)session.load(Product.class, idProduit);
+			if (prix > product.getPrixUnitaire()*1.2 && (product.getPrixUnitaire()) !=0) {
+				ok = false;
+			}
+		}
+		session.close();
 		return ok;
 	}
 
@@ -92,16 +94,21 @@ public class AppelBDD {
 		} else {
 			return null;
 		}
-		
+
 	}
 
 	public static ResultatAchat listeCourses(Achat achat) {
 		ResultatAchat resultatAchat = new ResultatAchat();
 		resultatAchat.courses = new HashMap<Produit,Integer>();
 		for (int idProduit : achat.listeCourses.keySet()) {
-			Buy buy = getAchat(Product.getProduct(idProduit));
+			Product prod = Product.getProduct(idProduit);
+			Buy buy = getAchat(prod);
+			if (buy.getQuantite()>0) {
+				Vendu.ajoutVente(buy.getQuantite(),new Date(),prod, buy.getPrix());
+			}
 			resultatAchat.courses.put(buy.getProduct(), buy.getQuantite());
 		}
+
 		return resultatAchat ;
 	}
 
@@ -115,7 +122,7 @@ public class AppelBDD {
 		stocks = session.createQuery("from Stock where product=?").setParameter(0, p).list();
 
 		session.getTransaction().commit();
-		
+
 
 		if (stocks.size() > 0) {
 			int quantite = 0;
