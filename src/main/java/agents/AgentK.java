@@ -13,11 +13,8 @@ import fr.miage.agents.api.message.negociation.NegocierPrix;
 import fr.miage.agents.api.message.negociation.ResultatAnnulationAchat;
 import fr.miage.agents.api.message.negociation.ResultatFinalisationAchat;
 import fr.miage.agents.api.message.negociation.ResultatInitiationAchat;
-<<<<<<< 4a6355dd0c392aeb3fb321607218abc18c25216a
 import fr.miage.agents.api.message.negociation.ResultatNegociation;
-=======
 import jade.core.AID;
->>>>>>> ca marche on insere en bdd
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
