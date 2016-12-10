@@ -38,7 +38,7 @@ public class AgentAchat extends CyclicBehaviour{
 
 				switch(message.type){
 				case InitierAchat:
-					System.out.println("ok");
+					
 					UUID notreUuid =  UUID.randomUUID();
 					//reception du message de l'agent gestion
 					InitierAchat infoAgentGestion = (InitierAchat)msg.getContentObject();
@@ -56,6 +56,8 @@ public class AgentAchat extends CyclicBehaviour{
 					transaction.put(notreUuid, initiationDeLachat);
 					produitEtQuantite.put(notreUuid, infoAgentGestion);
 					this.getAgent().send(initiationDeLachat);
+					
+					System.out.println("ok");
 					break;
 				case ResultatInitiationAchat:
 					ResultatInitiationAchat resultAch = (ResultatInitiationAchat)msg.getContentObject();
