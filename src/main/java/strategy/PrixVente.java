@@ -173,7 +173,7 @@ public class PrixVente {
 		List<Product> products = new ArrayList<Product>();
 		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
-		products = ((Session) HibernateUtil.getSessionFactory()).createQuery("from Product").list();
+		products = ((Session) HibernateUtil.getSessionFactory().getCurrentSession()).createQuery("from Product").list();
 		
 		for (Product p : products) {
 			Buy buy = AppelBDD.getAchat(p);
