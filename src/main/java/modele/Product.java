@@ -56,14 +56,14 @@ public class Product {
 		return Product;
 	}
 
-	public static List<Product> getCategorieProduct(int categories){
+	public static List<Product> getCategorieProduct(Categorie categorie2){
 
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 
-		String hql = "SELECT p FROM Product p WHERE p.idCategorie=:categorie";
+		String hql = "SELECT p FROM Product p WHERE p.categorie=:categorie";
 		Query query = session.createQuery(hql);
-		query.setParameter("categorie", categories);
+		query.setParameter("categorie", categorie2);
 
 		List<Product> products = null;
 

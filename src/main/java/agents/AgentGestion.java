@@ -69,6 +69,8 @@ public class AgentGestion extends TickerBehaviour{
 		HashMap<String, Double> salesOrganize = DefinirPromotion.checkForSales();
 		if(!salesOrganize.isEmpty()){
 			ACLMessage sales = new ACLMessage(ACLMessage.INFORM);
+			AID x = new AID ("receiver@169.254.69.248:8521/JADE");
+			x.addAddresses("http://DESKTOP-071AKV4:7778/acc");
 			sales.addReceiver(new AID("AgentVente", AID.ISLOCALNAME));
 
 			PrevenirSolde ps = new PrevenirSolde();
@@ -78,7 +80,6 @@ public class AgentGestion extends TickerBehaviour{
 				sales.setContentObject(ps);
 				this.getAgent().send(sales);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

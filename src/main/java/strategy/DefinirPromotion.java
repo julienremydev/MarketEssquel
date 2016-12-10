@@ -39,7 +39,7 @@ public class DefinirPromotion {
 		HashMap<Integer, Double> ratiosVieuxStocks = new HashMap();
 		int[] categories = {4, 5, 6};
 		for(int i=0; i<categories.length; i++){
-			List<Product> products = Product.getCategorieProduct(categories[i]);
+			List<Product> products = Product.getCategorieProduct(Categorie.getCategorie(categories[i]));
 			ratiosVieuxStocks.put(categories[i], calculRationStockCategorie(products));
 		}
 		
@@ -74,6 +74,7 @@ public class DefinirPromotion {
 				Map.Entry pair = (Map.Entry)it2.next();
 				Promotion.ajoutPromo((Integer)pair.getKey(), (double)pair.getValue());
 				market.promoPrevue();
+				System.out.println();
 				it2.remove();
 			}
 		}
@@ -97,7 +98,7 @@ public class DefinirPromotion {
 		return ratio;
 	}	
 	
-	private static Double calculRationStockCategorie(List<Product> products) {
+	public static Double calculRationStockCategorie(List<Product> products) {
 		double cumulRatio = 0;
 		int nbProduitsCategorie = products.size();
 		

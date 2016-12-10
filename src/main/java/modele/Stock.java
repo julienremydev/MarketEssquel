@@ -53,7 +53,7 @@ public class Stock {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
-        String hql = "SELECT s.dateAchat FROM Stock s WHERE s.produit=:produit AND s.quantite > 0 ORDER BY s.dateAchat ASC";
+        String hql = "SELECT s.dateAchat FROM Stock s WHERE s.product=:produit AND s.quantite > 0 ORDER BY s.dateAchat ASC";
         Query query = session.createQuery(hql);
         query.setParameter("produit", product);
         
@@ -88,7 +88,7 @@ public class Stock {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
-        String hql = "SELECT s FROM Stock s WHERE s.produit=:produit AND s.quantite > 0 ORDER BY s.dateAchat ASC LIMIT 1";
+        String hql = "SELECT s FROM Stock s WHERE s.product=:produit AND s.quantite > 0 ORDER BY s.dateAchat ASC";
         Query query = session.createQuery(hql);
         query.setParameter("produit", product);
         Stock s = null;
