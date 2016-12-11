@@ -9,13 +9,17 @@ import org.hibernate.Query;
 import util.HibernateUtil;
 
 public class SuperMarche {
-	private int id;
-	private String nom;
-	private float capital;
-	private int stock;
-	private int MAX_STOCK;
-	private int nb_jours_promo_restants;
+	private static String nom="MarketEssquel";
+	private static float capital=100000;
+	private static int stock=0;
+	private static int MAX_STOCK=1000;
+	private static int nb_jours_promo_restants=10;
 	public final static ArrayList<EnsembleProduit> produitsPromo = new ArrayList<EnsembleProduit>();
+	public static SuperMarche supermarhe = new SuperMarche();
+
+	public static SuperMarche getInstance() {
+		return supermarhe;
+	}
 
 	static {
 		produitsPromo.add(new EnsembleProduit("Courgette", "Tomate"));
@@ -23,17 +27,10 @@ public class SuperMarche {
 		produitsPromo.add(new EnsembleProduit("Four microonde", "Grille pain"));
 		produitsPromo.add(new EnsembleProduit("Montre connectée", "Smartphone"));
 		produitsPromo.add(new EnsembleProduit("Bière", "Mirabelle"));
+
 	}
 
 	public SuperMarche() {
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getNom() {
@@ -71,44 +68,6 @@ public class SuperMarche {
 		session.close();
 	}
 
-	public synchronized static SuperMarche getSuperMarche(String nom) {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-
-		String hql = "SELECT sm FROM SuperMarche sm WHERE sm.nom=:nom";
-		Query query = session.createQuery(hql);
-		query.setParameter("nom", nom);
-
-		SuperMarche supermarche = null;
-
-		SuperMarche s = (SuperMarche) query.list().get(0);
-		if (!query.list().isEmpty()) {
-			supermarche = (SuperMarche) query.list().get(0);
-		}
-
-		session.close();
-		
-		return supermarche;
-	}
-
-	public static List<SuperMarche> getSuperMarches() {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-
-		String hql = "SELECT sm FROM SuperMarche sm";
-		Query query = session.createQuery(hql);
-
-		List supermarches = null;
-
-		if (!query.list().isEmpty()) {
-			supermarches = query.list();
-		}
-
-		session.close();
-
-		return supermarches;
-	}
-
 	public int getMAX_STOCK() {
 		return MAX_STOCK;
 	}
@@ -136,12 +95,5 @@ public class SuperMarche {
 	}
 
 	public void nouvelAn() {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-
-		this.setNb_jours_promo_restants(10);
-
-		session.update(this);
-		session.close();
-	}
+		this.setNb_jours_promo_restants(10);	}
 }

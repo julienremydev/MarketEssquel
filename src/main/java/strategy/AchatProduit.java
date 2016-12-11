@@ -159,7 +159,7 @@ public class AchatProduit {
 		//Ajout dans la table VENDU
 		Vendu.ajoutVente(quantite, new Date(), produit, prix);
 		
-		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
+		SuperMarche s = SuperMarche.getInstance();
 		
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
@@ -190,13 +190,12 @@ public class AchatProduit {
 		}
 
 		
-		session.update(s);
 		session.getTransaction().commit();
 		session.close();
 		
 	}
 	public synchronized static void achatFournisseur(long idProduit, int quantite, float prix) {
-		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
+		SuperMarche s = SuperMarche.getInstance();
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 		s.setCapital(s.getCapital() - prix*quantite);
@@ -208,7 +207,6 @@ public class AchatProduit {
 		stock.setQuantite(quantite);
 		stock.setPrixUnitaire(prix);
 		session.saveOrUpdate(stock);
-		session.saveOrUpdate(s);
 		session.getTransaction().commit();
 		session.close();
 	}
@@ -219,7 +217,7 @@ public class AchatProduit {
 
 		majListeproductsStrategiques();
 
-		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
+		SuperMarche s = SuperMarche.getInstance();
 
 		// PRENDRE EN COMPTE LES DEMANDES CLIENTS -> appel méthode de maj liste
 		HashMap<Product, Integer> hash = new HashMap<Product, Integer>();

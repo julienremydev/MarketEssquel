@@ -64,7 +64,7 @@ public class AppelBDD {
 
 	public static boolean isOkForBuying(float prix, int quantite, long idProduit) {
 		boolean ok = true;
-		SuperMarche supermarche = SuperMarche.getSuperMarche("MarketEssquel");
+		SuperMarche supermarche = SuperMarche.getInstance();
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		if (supermarche.getCapital()>prix*quantite) {
