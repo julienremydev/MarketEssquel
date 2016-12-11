@@ -178,6 +178,7 @@ public class PrixVente {
 		session.getTransaction().commit();
 		for (Product p : products) {
 			Buy buy = AppelBDD.getAchat(p);
+			System.out.println(buy);
 			p.setPrixUnitaire(setPrixVente(p, buy.getProduct().prixProduit));
 			HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 			HibernateUtil.getSessionFactory().getCurrentSession().update(p);

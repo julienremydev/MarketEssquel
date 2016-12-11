@@ -7,7 +7,8 @@ import java.util.UUID;
 
 import fr.miage.agents.api.message.Message;
 import fr.miage.agents.api.message.negociation.InitierAchat;
-import fr.miage.agents.api.message.relationclientsupermarche.Achat;
+import fr.miage.agents.api.message.recherche.Rechercher;
+import fr.miage.agents.api.message.recherche.ResultatRecherche;
 import fr.miage.agents.api.message.relationclientsupermarche.ResultatAchat;
 import fr.miage.agents.api.model.Produit;
 import jade.core.AID;
@@ -15,6 +16,7 @@ import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import modele.Categorie;
 
 public class AgentJ extends CyclicBehaviour{
 	private static final MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
@@ -26,6 +28,8 @@ public class AgentJ extends CyclicBehaviour{
 	Scanner sc = new Scanner(System.in);
 	public void action() 
 	{
+		/*
+		PrixVente.updatePrice();
 		int again=1;
 		HashMap<Long,Integer> map = new HashMap<Long,Integer>();
 		while(again==1) {
@@ -47,8 +51,23 @@ public class AgentJ extends CyclicBehaviour{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		*/
+		
+		ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+		message.addReceiver(new AID("receiver", AID.ISLOCALNAME));
+		Rechercher rech = new Rechercher();
+		rech.nomCategorie="Légume";
+		
+		try {
+			message.setContentObject(rech);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		this.getAgent().send(message);
-		System.out.println("message Achat est envoyé");
+		System.out.println("message recherche est envoyé");
+		Scanner sc = new Scanner (System.in);
+		sc.nextInt();
 		block();
 		ACLMessage msg= this.getAgent().blockingReceive(mt);
 		if (msg!=null){
@@ -64,6 +83,12 @@ public class AgentJ extends CyclicBehaviour{
 						System.out.println(" Prix "+prod.prixProduit+" quantitté : "+res.courses.get(prod));
 					}
 					break;
+				case ResultatRecherche:
+					ResultatRecherche resReche = (ResultatRecherche) msg2;
+					for (Produit prod : resReche.produitList)
+					{
+						System.out.println(" Prix "+prod.prixProduit+" quantitté : "+prod.descriptionProduit);
+					}
 					
 				}
 			}

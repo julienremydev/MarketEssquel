@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import fr.miage.agents.api.message.Message;
 import fr.miage.agents.api.message.recherche.Rechercher;
+import fr.miage.agents.api.message.recherche.ResultatRecherche;
 import fr.miage.agents.api.message.relationclientsupermarche.Achat;
 import fr.miage.agents.api.message.relationclientsupermarche.ResultatAchat;
 import fr.miage.agents.api.message.util.AppelMethodeIncorrect;
@@ -37,7 +38,8 @@ public class AgentClient extends CyclicBehaviour{
 					break;
 				case Recherche:
 					Rechercher recherche = (Rechercher)msg.getContentObject();
-					response.setContentObject(recherche);
+					ResultatRecherche resRech = AppelBDD.search(recherche);
+					response.setContentObject(resRech);
 					break;
 				case PrevenirSolde:
 					if (msg.getSender().getName().equals("AgentGestion")) {

@@ -83,16 +83,17 @@ public class AppelBDD {
 		List<Product> products = new ArrayList<Product>();
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		products = session.createQuery("from Product natural join Categorie where nomCategorie=?")
+		products = session.createQuery("Select product from Stock p where p.product.categorie.nomCategorie =?")
 				.setParameter(0, categorie).list();
 
-		session.getTransaction().commit();
-		session.close();
-		if (products.size() > 0) {
-			return products;
-		} else {
-			return null;
+
+
+		if (!(products.size() > 0)) {
+			products = null;
 		}
+		session.close();
+		
+		return products;
 	}
 
 	public static ResultatAchat listeCourses(Achat achat) {
@@ -128,7 +129,7 @@ public class AppelBDD {
 			ArrayList<Float> prix = new ArrayList<Float>();
 			float price=0;
 			for (Stock s : stocks) {
-				price+=s.getProduit().getPrixUnitaire()*s.getQuantite();
+				price+=s.getPrixUnitaire()*s.getQuantite();
 				quantite+=s.getQuantite();
 			}
 			produit.prixProduit=price/quantite;

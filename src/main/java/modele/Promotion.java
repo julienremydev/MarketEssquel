@@ -3,6 +3,7 @@ package modele;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Session;
@@ -64,13 +65,18 @@ public class Promotion {
 	public static float isPromo(Categorie c ) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-
-		double promo = session.createQuery("select promo from Promotion where promosCategorie=? AND dateDebut < ? AND dateFin < ?").setParameter(0, c).setParameter(1, new Date()).setParameter(2, new Date()).getFirstResult();
-		if (promo==0) {
+		System.out.println("sysout de c : "+c);
+		List promo = session.createQuery("select promo from Promotion where promosCategorie=? AND dateDebut < ? AND dateFin < ?")
+				.setParameter(0, c)
+				.setParameter(1, new Date())
+				.setParameter(2, new Date())
+				.list();
+		session.close();
+		if (promo.isEmpty()) {
 			return (float)1.0;
 		}
 		else {
-			return (float)promo;
+			return (float)promo.get(0);
 		}
 	}
 
