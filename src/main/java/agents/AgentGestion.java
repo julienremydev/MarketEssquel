@@ -11,6 +11,7 @@ import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import modele.Product;
+import strategy.AchatProduit;
 import strategy.PrixVente;
 
 public class AgentGestion extends TickerBehaviour{
@@ -23,10 +24,10 @@ public class AgentGestion extends TickerBehaviour{
 		/*
 		 * Gestion des Stocks
 		 */
-		//HashMap<Product, Integer>  produitToBuy = AchatProduit.getWhatToBuy();
-		HashMap<Product, Integer>  produitToBuy = new HashMap<Product,Integer>();
+		HashMap<Product, Integer>  produitToBuy = AchatProduit.getWhatToBuy();
+		//HashMap<Product, Integer>  produitToBuy = new HashMap<Product,Integer>();
 		
-		produitToBuy.put(Product.getProduct(1), 10);
+		//produitToBuy.put(Product.getProduct(1), 10);
 		if(produitToBuy!=null){
 			Iterator it = produitToBuy.entrySet().iterator();
 			while (it.hasNext()) {
@@ -50,7 +51,7 @@ public class AgentGestion extends TickerBehaviour{
 			}
 		}
 
-		PrixVente.updatePrice();
+		//PrixVente.updatePrice();
 		
 
 		block();

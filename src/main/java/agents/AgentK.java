@@ -29,29 +29,29 @@ public class AgentK extends CyclicBehaviour{
 	public AgentK(Agent a){
 		super(a);
 	}
+	private int compteur = 0;
 	HashMap<UUID,ArrayList<Message>> messages = new HashMap<UUID,ArrayList<Message>>();
 	Scanner sc = new Scanner(System.in);
 	public void action() 
 	{
-		block();
+		
 		ACLMessage msg= this.getAgent().blockingReceive(mt);
 		if (msg!=null){
 			try {
 				Message message = (Message)msg.getContentObject();
-				ACLMessage response= new ACLMessage(ACLMessage.INFORM);
-				response.addReceiver(new AID("receiver", AID.ISLOCALNAME));
 				switch(message.type){
 				case InitierAchat:
+					
+					ACLMessage response= new ACLMessage(ACLMessage.INFORM);
+					response.addReceiver(new AID("receiver", AID.ISLOCALNAME));
+					
 					InitierAchat ia = (InitierAchat)message;
 					System.out.println("mocker est rentré dans initier Achat");
 					messages.put(ia.session, new ArrayList<Message>());
 					messages.get(ia.session).add(ia);
-					System.out.println("Entrez prix : ");
-					float prix = sc.nextFloat();
-					System.out.println("Entrez quantite: ");
-					int quantite = sc.nextInt();
-					System.out.println("Entrez boolean success (1 = true, 0 = false: ");
-					int isOk= sc.nextInt();
+					float prix = 2;
+					int quantite = ia.quantite;
+					int isOk= 1;
 					boolean success = false;
 					if (isOk==1) {
 						success = true;
@@ -63,13 +63,16 @@ public class AgentK extends CyclicBehaviour{
 					ria.session=ia.session;
 					messages.get(ia.session).add(ria);
 					response.setContentObject(ria);
+					this.getAgent().send(response);
 					break;
 				case NegocierPrix :
+					ACLMessage response2= new ACLMessage(ACLMessage.INFORM);
+					response2.addReceiver(new AID("receiver", AID.ISLOCALNAME));
 					NegocierPrix np = (NegocierPrix) message;
 					InitierAchat ia2 = (InitierAchat) messages.get(np.session).get(0);
 					ResultatInitiationAchat ria2 = (ResultatInitiationAchat) messages.get(np.session).get(1);
-					System.out.println("tapez 1 : pour fauve oto");
-					int isOk2= sc.nextInt();
+					//System.out.println("tapez 1 : pour fauve oto");
+					int isOk2= 1;
 					boolean success2 = false;
 					if (isOk2==1) {
 						success2 = true;
@@ -78,45 +81,53 @@ public class AgentK extends CyclicBehaviour{
 					rn.estAccepte=success2;
 					rn.session=np.session;
 					rn.idProduit=ia2.idProduit;
-					System.out.println("Entrez prix negocie : ");
-					rn.prixNegocie=sc.nextFloat();
+					//System.out.println("Entrez prix negocie : ");
+					rn.prixNegocie=2;
 					rn.quantiteDisponible=ria2.quantiteDisponible;
-					response.setContentObject(rn);
+					response2.setContentObject(rn);
+					this.getAgent().send(response2);
 					break;
 				case FinaliserAchat:
-
-					System.out.println("mocker est rentré dans finaliser Achat");
+					compteur ++;
+					System.out.println("Compteur finaliserAchat agent K : "+ compteur);
+					ACLMessage response1= new ACLMessage(ACLMessage.INFORM);
+					response1.addReceiver(new AID("receiver", AID.ISLOCALNAME));
 					FinaliserAchat fa = (FinaliserAchat) message;
-
-					System.out.println("Entrez boolean success (1 = true, 0 = false: ");
 					
 					InitierAchat ia3 = (InitierAchat) messages.get(fa.session).get(0);
-					ResultatInitiationAchat ria3 = (ResultatInitiationAchat) messages.get(fa.session).get(1);
-
+					ResultatInitiationAchat ria3 = (ResultatInitiationAchat) messages.get(ia3.session).get(1);
 					
 					ResultatFinalisationAchat rfa = new ResultatFinalisationAchat();
 					rfa.session=fa.session;
 					rfa.idProduit=ia3.idProduit;
 					rfa.prixFinal=ria3.prixFixe;
 					rfa.quantiteProduit=ria3.quantiteDisponible;
-					response.setContentObject(rfa);
+					response1.setContentObject(rfa);
+					this.getAgent().send(response1);
 					break;
 				case AnnulerAchat:
+					ACLMessage response3= new ACLMessage(ACLMessage.INFORM);
+					response3.addReceiver(new AID("receiver", AID.ISLOCALNAME));
 					AnnulerAchat aa= (AnnulerAchat) message;
 					ResultatAnnulationAchat raa = new ResultatAnnulationAchat();
 					raa.session=aa.session;
-					response.setContentObject(raa);
+					response3.setContentObject(raa);
+					this.getAgent().send(response3);
 					break;
 				default: 
 					System.out.println("Problème");
 				}
-				System.out.println(response.getContentObject());
-				this.getAgent().send(response);
+				
+				
 			}
 			catch(Exception e)
 			{
 				e.printStackTrace();
 			}
+		}
+		else
+		{
+			block();
 		}
 	}
 }

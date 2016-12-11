@@ -98,6 +98,11 @@ public class PrixVente {
 		Categorie categorie = product.getCategorie();
 		
 		int coeffNbJours = (int) (nbJours % 7);
+		if (coeffNbJours>3)
+		{
+			coeffNbJours = 3;
+		}
+		System.out.println(coeffNbJours + " cat : " + categorie.getNomCategorie()+ " = "+ realCategorie(categorie, false));
 		return list.get(coeffNbJours).get(realCategorie(categorie,false));
 	}
 

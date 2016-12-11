@@ -22,10 +22,15 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import strategy.AchatProduit;
 import strategy.AppelBDD;
-
+/** 
+ * Agent s'occupant des échanges avec l'agent du groupe gournisseur.
+ * @author arthu
+ *
+ */
 public class AgentAchat extends CyclicBehaviour{
 	private static final MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-	
+	private int compteurResultatInitierAchat = 0;
+	private int compteurResultatFinaliserAchat = 0;
 	public AgentAchat(Agent a){
 		super(a);
 	}
@@ -33,15 +38,16 @@ public class AgentAchat extends CyclicBehaviour{
 	HashMap<UUID,InitierAchat> produitEtQuantite = new HashMap<UUID,InitierAchat>();
 	public void action() 
 	{
-		
+
 		ACLMessage msg= this.getAgent().blockingReceive(mt);
+
 		if (msg!=null){
 			try {
 				Message message = (Message)msg.getContentObject();
-				System.out.println("sysout de message.type" + message);
+
 				switch(message.type){
 				case InitierAchat:
-					
+
 					UUID notreUuid =  UUID.randomUUID();
 					//reception du message de l'agent gestion
 					InitierAchat infoAgentGestion = (InitierAchat)msg.getContentObject();
@@ -55,46 +61,47 @@ public class AgentAchat extends CyclicBehaviour{
 					contenuInitAchat.quantite = infoAgentGestion.quantite;
 					//envoi des informations pour initier un achat avec le fournisseur
 					initiationDeLachat.setContentObject(contenuInitAchat);
-					
+
 					transaction.put(notreUuid, initiationDeLachat);
 					produitEtQuantite.put(notreUuid, contenuInitAchat);
 					this.getAgent().send(initiationDeLachat);
-					
+
 					break;
 				case ResultatInitiationAchat:
+					compteurResultatInitierAchat++;
+					System.out.println("Compteur resultat initier Achat : "+ compteurResultatInitierAchat);
 					ResultatInitiationAchat resultAch = (ResultatInitiationAchat)msg.getContentObject();
 					UUID sessionCourante = resultAch.session;
 					InitierAchat infoAgentGestionResult = (InitierAchat)produitEtQuantite.get(sessionCourante);
-					
-					System.out.println("prix fixé : " + infoAgentGestionResult);
+
 					boolean prixOk = AppelBDD.isOkForBuying(resultAch.prixFixe, resultAch.quantiteDisponible, infoAgentGestionResult.idProduit);
-					System.out.println("isok for buying : "+prixOk);
+
 					if (resultAch.quantiteDisponible != 0)
 					{
 						if(resultAch.quantiteDisponible == infoAgentGestionResult.quantite )
 						{
 							if (prixOk)// envoi finalisation achat
 							{
+								System.out.println(prixOk);
 								ACLMessage finalisationAchat = new ACLMessage(ACLMessage.INFORM);
 								finalisationAchat.addReceiver(new AID("mocker", AID.ISLOCALNAME));
-								
+
 								FinaliserAchat contenuFinalAchat = new FinaliserAchat();
 								contenuFinalAchat.session=sessionCourante;
-								
+
 								finalisationAchat.setContentObject(contenuFinalAchat);
-								transaction.put(sessionCourante, finalisationAchat);
 								this.getAgent().send(finalisationAchat);
 							}
 							else{ // renégociation du prix
 								ACLMessage negociationPrix = new ACLMessage(ACLMessage.INFORM);
 								negociationPrix.addReceiver(new AID("mocker", AID.ISLOCALNAME));
-								
+
 								NegocierPrix negoPrice = new NegocierPrix();
 								negoPrice.idProduit = (int) infoAgentGestionResult.idProduit;
 								negoPrice.session = sessionCourante;
 								negoPrice.prixDemande = (float) (resultAch.prixFixe * 0.9) ; // ici 
 								negoPrice.quantiteDemande = resultAch.quantiteDisponible;
-								
+
 								negociationPrix.setContentObject(negoPrice);
 								this.getAgent().send(negociationPrix);
 							}
@@ -113,23 +120,24 @@ public class AgentAchat extends CyclicBehaviour{
 					{
 						ACLMessage annulerLachat = new ACLMessage(ACLMessage.INFORM);
 						annulerLachat.addReceiver(new AID("mocker", AID.ISLOCALNAME));
-						
+
 						AnnulerAchat newAnnulation = new AnnulerAchat();
 						newAnnulation.session = sessionCourante;
-						
+
 						annulerLachat.setContentObject(newAnnulation);
 						this.getAgent().send(annulerLachat);
 					}
 					break;
 				case ResultatFinalisationAchat:
+					compteurResultatFinaliserAchat++;
+					System.out.println("Compteur resultat finaliser achat " +compteurResultatFinaliserAchat );
 					ResultatFinalisationAchat resultatFinalAchat = (ResultatFinalisationAchat)msg.getContentObject();
 					UUID sessionCouranteFinalAchat = resultatFinalAchat.session;
 					long idprod = resultatFinalAchat.idProduit;
 					int quantitDemande = resultatFinalAchat.quantiteProduit;
 					float prixAchat = resultatFinalAchat.prixFinal;
 					AchatProduit.achatFournisseur(idprod,quantitDemande,prixAchat);
-					transaction.remove(sessionCouranteFinalAchat);
-					produitEtQuantite.remove(sessionCouranteFinalAchat);
+
 					System.out.println("achat de : " + idprod + " au nombre de : "+quantitDemande+" au prix de : "+prixAchat+" est tarminé");				
 					break;
 				case ResultatNegociation:
@@ -141,10 +149,10 @@ public class AgentAchat extends CyclicBehaviour{
 					{
 						ACLMessage finalisationAchat = new ACLMessage(ACLMessage.INFORM);
 						finalisationAchat.addReceiver(new AID("mocker", AID.ISLOCALNAME));
-						
+
 						FinaliserAchat contenuFinalAchat = new FinaliserAchat();
 						contenuFinalAchat.session=sessionCouranteResultNego;
-						
+
 						finalisationAchat.setContentObject(contenuFinalAchat);
 						transaction.put(sessionCouranteResultNego, finalisationAchat);
 						this.getAgent().send(finalisationAchat);
@@ -153,10 +161,10 @@ public class AgentAchat extends CyclicBehaviour{
 					{
 						ACLMessage annulerLachat = new ACLMessage(ACLMessage.INFORM);
 						annulerLachat.addReceiver(new AID("mocker", AID.ISLOCALNAME));
-						
+
 						AnnulerAchat newAnnulation = new AnnulerAchat();
 						newAnnulation.session = sessionCouranteResultNego;
-						
+
 						annulerLachat.setContentObject(newAnnulation);
 						this.getAgent().send(annulerLachat);
 					}
@@ -172,6 +180,8 @@ public class AgentAchat extends CyclicBehaviour{
 				e.printStackTrace();
 			}
 		}
-		block();
+		else{
+			block();
+		}
 	}
 }
