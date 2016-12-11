@@ -116,6 +116,6 @@ public class Promotion {
 		pr.setDateFin(dateFin);
 
 		session.save(pr);
-		session.close();
+		session.getTransaction().commit();
 	}
 }
