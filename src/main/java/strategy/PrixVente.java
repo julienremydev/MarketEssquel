@@ -1,6 +1,7 @@
 package strategy;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,10 +39,7 @@ public class PrixVente {
 		while (prixConccurence>prixVente*1.2) {
 			prixVente*=0.98;
 		}
-		System.out.println("prixVente first " + prixVente);
-		System.out.println("prixVente first2 " + prixVente*(float)0.1);
 		prixVente=prixVente*(float) getCoeffDate(product);
-		System.out.println("prixVente : "  +prixVente);
 		return prixVente;
 	} 
 
@@ -97,14 +95,9 @@ public class PrixVente {
 		list.add(map2);
 		list.add(map3);
 		long nbJours = Stock.getDateAchat(product);
-		System.out.println("nb jours : "+nbJours);
 		Categorie categorie = product.getCategorie();
 		
 		int coeffNbJours = (int) (nbJours % 7);
-		System.out.println("coeff"+coeffNbJours);
-		System.out.println("realcategorie" + realCategorie(categorie, false));
-		System.out.println("list : "+list.get(coeffNbJours).get(realCategorie(categorie,false)));
-		System.out.println("list2 : "+list.get(coeffNbJours));
 		return list.get(coeffNbJours).get(realCategorie(categorie,false));
 	}
 
@@ -174,21 +167,22 @@ public class PrixVente {
 
 	public static void updatePrice() {
 		List<Product> products = new ArrayList<Product>();
+		Categorie c1 = Categorie.getCategorie(1);
+		Categorie c2 = Categorie.getCategorie(2);
+		Categorie c3 = Categorie.getCategorie(3);
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-
+		session.createQuery("DELETE FROM Stock as s WHERE s.product IN (SELECT idProduct FROM Product WHERE categorie=? OR categorie=? OR categorie=?) AND DATEDIFF(?,dateachat) > 27").setParameter(0, c1).setParameter(1, c2).setParameter(2, c3).setParameter(3, new Date()).executeUpdate();
+		
 		products = session.createQuery("SELECT s.product FROM Stock s").list();
-		session.close();
+		session.getTransaction().commit();
 		for (Product p : products) {
 			Buy buy = AppelBDD.getAchat(p);
 			p.setPrixUnitaire(setPrixVente(p, buy.getProduct().prixProduit));
-			System.out.println(p);
 			HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 			HibernateUtil.getSessionFactory().getCurrentSession().update(p);
 			HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
 			HibernateUtil.getSessionFactory().getCurrentSession().close();
 		}
-	
-
 	}
 }

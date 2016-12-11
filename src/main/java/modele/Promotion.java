@@ -16,9 +16,9 @@ public class Promotion {
 	private Date dateFin;
 	private Categorie promosCategorie;
 	private double promo;
-	
+
 	public Promotion(){
-		
+
 	}
 
 	public int getId() {
@@ -61,42 +61,55 @@ public class Promotion {
 		this.promo = promo;
 	}
 
+	public static float isPromo(Categorie c ) {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+
+		double promo = session.createQuery("select promo from Promotion where promosCategorie=? AND dateDebut < ? AND dateFin < ?").setParameter(0, c).setParameter(1, new Date()).setParameter(2, new Date()).getFirstResult();
+		if (promo==0) {
+			return (float)1.0;
+		}
+		else {
+			return (float)promo;
+		}
+	}
+
 	public static void ajoutPromo(Integer idCat, double promo){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        
-        Categorie cat = (Categorie)session.load(Categorie.class, idCat);
-        
-        Calendar date = Calendar.getInstance();
-        
-        Promotion pr = new Promotion();
-        pr.setPromosCategorie(cat);
-        pr.setPromo(promo);
-        
-        date.add(Calendar.DATE, 14);
-        pr.setDateDebut(date.getTime());
-        date.add(Calendar.DATE, 2);
-        pr.setDateFin(date.getTime());
-        date.add(Calendar.DATE, -16);
-        
-        session.save(pr);
-        session.close();
+		session.beginTransaction();
+
+		Categorie cat = (Categorie)session.load(Categorie.class, idCat);
+
+		Calendar date = Calendar.getInstance();
+
+		Promotion pr = new Promotion();
+		pr.setPromosCategorie(cat);
+		pr.setPromo(promo);
+
+		date.add(Calendar.DATE, 14);
+		pr.setDateDebut(date.getTime());
+		date.add(Calendar.DATE, 2);
+		pr.setDateFin(date.getTime());
+		date.add(Calendar.DATE, -16);
+
+		session.save(pr);
+		session.close();
 	}
-	
-	
+
+
 	public static void ajoutPromo(Integer idCat, double promo, Date dateDeb, Date dateFin){
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        
-        Categorie cat = (Categorie)session.load(Categorie.class, idCat);
-        
-        Promotion pr = new Promotion();
-        pr.setPromosCategorie(cat);
-        pr.setPromo(promo);
-        pr.setDateDebut(dateDeb);
-        pr.setDateFin(dateFin);
-        
-        session.save(pr);
-        session.close();
+		session.beginTransaction();
+
+		Categorie cat = (Categorie)session.load(Categorie.class, idCat);
+
+		Promotion pr = new Promotion();
+		pr.setPromosCategorie(cat);
+		pr.setPromo(promo);
+		pr.setDateDebut(dateDeb);
+		pr.setDateFin(dateFin);
+
+		session.save(pr);
+		session.close();
 	}
 }

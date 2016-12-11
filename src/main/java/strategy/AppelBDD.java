@@ -13,6 +13,7 @@ import fr.miage.agents.api.message.relationclientsupermarche.ResultatAchat;
 import fr.miage.agents.api.model.Produit;
 import modele.Buy;
 import modele.Product;
+import modele.Promotion;
 import modele.Stock;
 import modele.SuperMarche;
 import util.HibernateUtil;
@@ -101,7 +102,8 @@ public class AppelBDD {
 			Product prod = Product.getProduct(idProduit);
 			int quantite = AchatProduit.getNombreproductsDansStock(prod);
 			if (quantite>0) {
-				AchatProduit.achatClient(prod, achat.listeCourses.get(idProduit), prod.getPrixUnitaire());
+				float promo = Promotion.isPromo(prod.getCategorie());
+				AchatProduit.achatClient(prod, achat.listeCourses.get(idProduit), prod.getPrixUnitaire()*promo);
 				resultatAchat.courses.put(prod.getCloneProduct(), quantite-(achat.listeCourses.get(idProduit)));
 			}
 		}

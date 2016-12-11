@@ -27,10 +27,10 @@ public class AgentJ extends CyclicBehaviour{
 	public void action() 
 	{
 		int again=1;
-		HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
+		HashMap<Long,Integer> map = new HashMap<Long,Integer>();
 		while(again==1) {
 		System.out.println("Entrez produit : ");
-		int idProduit = sc.nextInt();
+		long idProduit = sc.nextLong();
 		System.out.println("Entrez quantite: ");
 		int quantite = sc.nextInt();
 		map.put(idProduit, quantite);
