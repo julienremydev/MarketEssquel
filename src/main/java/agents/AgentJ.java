@@ -17,7 +17,11 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import modele.Categorie;
-
+/**
+ * Class de test pour l'agent client
+ * @author arthu
+ *
+ */
 public class AgentJ extends CyclicBehaviour{
 	private static final MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
 	public AgentJ(Agent a){
@@ -28,7 +32,7 @@ public class AgentJ extends CyclicBehaviour{
 	Scanner sc = new Scanner(System.in);
 	public void action() 
 	{
-		/*
+		/* Décommenter pour tester l'achat , ne pas oublier de commenter la recherche ci-après
 		PrixVente.updatePrice();
 		int again=1;
 		HashMap<Long,Integer> map = new HashMap<Long,Integer>();
@@ -64,6 +68,7 @@ public class AgentJ extends CyclicBehaviour{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
 		this.getAgent().send(message);
 		System.out.println("message recherche est envoyé");
 		Scanner sc = new Scanner (System.in);

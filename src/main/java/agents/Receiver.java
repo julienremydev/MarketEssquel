@@ -22,8 +22,8 @@ public class Receiver extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        //addBehaviour(new AgentAchat(this));
-        addBehaviour(new AgentClient(this));
+        addBehaviour(new AgentAchat(this));
+        //addBehaviour(new AgentClient(this));
     }
 }
 

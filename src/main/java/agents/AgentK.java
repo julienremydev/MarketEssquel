@@ -19,7 +19,11 @@ import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-
+/**
+ * Class de test pour l'agent Achat qui s'occupera de l'achat auprès des fournisseurs
+ * @author arthu
+ *
+ */
 public class AgentK extends CyclicBehaviour{
 	private static final MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
 	public AgentK(Agent a){
