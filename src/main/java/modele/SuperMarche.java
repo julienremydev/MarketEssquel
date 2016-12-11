@@ -71,7 +71,7 @@ public class SuperMarche {
 		session.close();
 	}
 
-	public static SuperMarche getSuperMarche(String nom) {
+	public synchronized static SuperMarche getSuperMarche(String nom) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 

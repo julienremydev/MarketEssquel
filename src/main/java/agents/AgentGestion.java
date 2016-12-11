@@ -51,7 +51,7 @@ public class AgentGestion extends TickerBehaviour{
 			}
 		}
 
-		//PrixVente.updatePrice();
+		PrixVente.updatePrice();
 		
 
 		block();

@@ -125,14 +125,17 @@ public class AchatProduit {
 
 	public static int getNombreproductsDansStock(Product product) {
 		HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-
-		String hql = "SELECT count(*) FROM Stock s WHERE s.product=:product";
+		int result = 0;
+		String hql = "SELECT SUM(quantite) FROM Stock s WHERE s.product=:product GROUP BY s.product";
 		Query query = HibernateUtil.getSessionFactory().getCurrentSession().createQuery(hql);
 		query.setParameter("product", product);
-
-		int result = ((Long) query.list().get(0)).intValue();
+		if(!query.list().isEmpty())
+		{
+			result = ((Long) query.list().get(0)).intValue();
+			
+		}
+		
 		HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
-
 		return result;
 
 	}
@@ -196,7 +199,7 @@ public class AchatProduit {
 		SuperMarche s = SuperMarche.getSuperMarche("MarketEssquel");
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
-		s.setCapital(s.getCapital() - prix);
+		s.setCapital(s.getCapital() - prix*quantite);
 		s.setStock(s.getStock() + quantite);
 		// MISE A JOUR DE LA TABLE STOCK
 		Stock stock = new Stock ();
@@ -204,8 +207,8 @@ public class AchatProduit {
 		stock.setDateAchat(new Date());
 		stock.setQuantite(quantite);
 		stock.setPrixUnitaire(prix);
-		session.save(stock);
-		session.update(s);
+		session.saveOrUpdate(stock);
+		session.saveOrUpdate(s);
 		session.getTransaction().commit();
 		session.close();
 	}
@@ -228,7 +231,7 @@ public class AchatProduit {
 			// Categorie cat = (Categorie)session.load(Categorie.class,
 			// p.getCategorie());
 			int nb_products_dans_stock = getNombreproductsDansStock(p);
-			if (p.getCategorie().getNomCategorie().equals("High-Tech") && nb_products_dans_stock < seuil_products_ht) {
+			if (p.getCategorie().getNomCategorie().equals("High-tech") && nb_products_dans_stock < seuil_products_ht) {
 				// On vérifie si le nombre total de products qu'on souhaite
 				// commander ne va pas engendrer le dépassement des stocks
 				if (seuil_products_ht - nb_products_dans_stock + s.getStock() + nb_prod_voulus <= s.getMAX_STOCK()) {
