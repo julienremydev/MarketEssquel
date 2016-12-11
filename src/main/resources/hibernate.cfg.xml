@@ -19,7 +19,6 @@
 		<mapping resource="Product.hbm.xml" />
 		<mapping resource="Promotion.hbm.xml" />
 		<mapping resource="Stock.hbm.xml" />
-		<mapping resource="SuperMarche.hbm.xml" />
 		<mapping resource="Vendu.hbm.xml" />
 </session-factory>
 </hibernate-configuration>
