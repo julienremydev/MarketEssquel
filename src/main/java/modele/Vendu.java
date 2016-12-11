@@ -67,7 +67,7 @@ public class Vendu {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
-        String hql = "SELECT v.produit, sum(v.quantite) FROM Vendu v GROUP BY v.produit ORDER BY sum(v.quantite) DESC LIMIT 3";
+        String hql = "SELECT v.produit, sum(v.quantite) FROM Vendu v GROUP BY v.produit ORDER BY sum(v.quantite) DESC LIMIT 5";
         Query query = session.createQuery(hql);
         List result = query.list();
         

@@ -12,6 +12,7 @@ import modele.Buy;
 import modele.Categorie;
 import modele.Product;
 import modele.Stock;
+import modele.Vendu;
 import util.HibernateUtil;
 
 public class PrixVente {
@@ -39,7 +40,9 @@ public class PrixVente {
 		while (prixConccurence>prixVente*1.2) {
 			prixVente*=0.98;
 		}
+		
 		prixVente=prixVente*(float) getCoeffDate(product);
+		prixVente=prixVente*(float) getStockCoeff(product,product.getCategorie());
 		return prixVente;
 	} 
 
@@ -50,17 +53,11 @@ public class PrixVente {
 
 	public static double getTop (Product product) {
 		//appel bdd pour connaitre le classement de vente du produit
-		int top = 0;
-		switch (top) {
-		case 1 :
+		List<Long> products = AchatProduit.getListeproductsStrategiques();
+		if (products.contains(product.getIdProduct())) {
 			return 1.15;
-		case 2 :
-			return 1.1;
-		case 3 :
-			return 1.05;
-		default : 
-			return 1;
 		}
+		else return 1;
 	}
 
 	public static double getCoeffDate(Product product) {
@@ -102,7 +99,6 @@ public class PrixVente {
 		{
 			coeffNbJours = 3;
 		}
-		System.out.println(coeffNbJours + " cat : " + categorie.getNomCategorie()+ " = "+ realCategorie(categorie, false));
 		return list.get(coeffNbJours).get(realCategorie(categorie,false));
 	}
 
@@ -122,7 +118,7 @@ public class PrixVente {
 		}
 	}
 
-	private static double getStockCoeff(Produit produit, Categorie categorie) {
+	private static double getStockCoeff(Product produit, Categorie categorie) {
 
 		//getStock
 		Stock stock = null;
